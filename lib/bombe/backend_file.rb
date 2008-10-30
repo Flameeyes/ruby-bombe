@@ -15,22 +15,20 @@
 # License along with ruby-bombe.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-require 'test/unit/ui/console/testrunner'
-require 'test/unit/testsuite'
+require 'bombe/backend_io'
 require 'pathname'
 
-# Test templates
-require Pathname.new(__FILE__).dirname + 'tt_backend'
-
-require Pathname.new(__FILE__).dirname + 'tc_backend_io'
-require Pathname.new(__FILE__).dirname + 'tc_backend_file'
-
-class Bombe::TestSuite
-  def self.suite
-    suite = Test::Unit::TestSuite.new("ruby-bombe testsuite")
-    suite << Bombe::TC_Backend_IO.suite
-    suite << Bombe::TC_Backend_File.suite
+module Bombe
+  module Backend
+    # File backend
+    #
+    # This class is a very lightweight wrapper around Backend::IO: it
+    # accepts a string or pathname as input, opens it and passes it to
+    # the IO class.
+    class File < IO
+      def initialize(path)
+        super(::File.new(path))
+      end
+    end
   end
 end
-
-Test::Unit::UI::Console::TestRunner.run(Bombe::TestSuite)

@@ -15,22 +15,33 @@
 # License along with ruby-bombe.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-require 'test/unit/ui/console/testrunner'
-require 'test/unit/testsuite'
-require 'pathname'
+require 'bombe/backend_file'
 
-# Test templates
-require Pathname.new(__FILE__).dirname + 'tt_backend'
+module Bombe
+  class TC_Backend_File < TT_Backend
+    def setup
+      super
+      
+      # TODO this has to be tested with both strings and pathnames
+      @backend = Backend::File.new(file_path.to_s)
+    end
 
-require Pathname.new(__FILE__).dirname + 'tc_backend_io'
-require Pathname.new(__FILE__).dirname + 'tc_backend_file'
+    # Specialise the class test, the backend instance is going to be
+    # Backend::File, Backend::IO and Backend::Base all at once.
+    def test_class
+      super
+      
+      assert_kind_of Backend::IO, @backend
+      assert_kind_of Backend::File, @backend
+    end
 
-class Bombe::TestSuite
-  def self.suite
-    suite = Test::Unit::TestSuite.new("ruby-bombe testsuite")
-    suite << Bombe::TC_Backend_IO.suite
-    suite << Bombe::TC_Backend_File.suite
+    # Test the behaviour when an invalid parameter is passed to the File
+    # backend. Expected behaviour: TypeError exception is raised.
+    def test_invalid
+      assert_raise TypeError do
+        Backend::File.new({})
+      end
+    end
+
   end
 end
-
-Test::Unit::UI::Console::TestRunner.run(Bombe::TestSuite)
