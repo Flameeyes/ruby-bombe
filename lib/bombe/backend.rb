@@ -71,6 +71,10 @@ module Bombe
         0
       end
 
+      # Return the current position in the data.
+      #
+      # This function will give the position of the reading cursor in
+      # the data, starting from 0 that is the start of the data.
       def tell
         raise NotImplementedError.new("tell not implemented") unless
           respond_to? "tell_"
@@ -78,6 +82,13 @@ module Bombe
         tell_
       end
 
+      # Close the element and cleanup its resources.
+      #
+      # This function allows to free the resources used by the backend
+      # (file descriptors, memory maps, temporary files, ...).
+      #
+      # TODO: consider having a parameter to decide whether to trigger
+      # cascade deletion or not.
       def close
         raise NotImplementedError.new("close not implemented") unless
           respond_to? "close_"
