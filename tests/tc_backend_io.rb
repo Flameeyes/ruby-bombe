@@ -25,6 +25,14 @@ module Bombe
       @backend = Backend::IO.new(File.new(file_path))
     end
 
+    # Specialise the class test, the backend instance is going to be
+    # both Backend::IO and Backend::Base.
+    def test_class
+      super
+      
+      assert_kind_of Backend::IO, @backend
+    end
+
     # Test the behaviour when an invalid parameter is passed to the IO
     # backend. Expected behaviour: TypeError exception is raised.
     def test_invalid
