@@ -25,6 +25,7 @@ require Pathname.new(__FILE__).dirname + 'tt_backend'
 require Pathname.new(__FILE__).dirname + 'tc_backend_io'
 require Pathname.new(__FILE__).dirname + 'tc_backend_file'
 require Pathname.new(__FILE__).dirname + 'tc_backend_mmap'
+require Pathname.new(__FILE__).dirname + 'tc_backend_gzip'
 
 class Bombe::TestSuite
   def self.suite
@@ -32,6 +33,7 @@ class Bombe::TestSuite
     suite << Bombe::TC_Backend_IO.suite
     suite << Bombe::TC_Backend_File.suite
     suite << Bombe::TC_Backend_Mmap.suite
+    suite << Bombe::TC_Backend_Gzip.suite
   end
 end
 
