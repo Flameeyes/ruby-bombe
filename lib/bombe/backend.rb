@@ -33,7 +33,7 @@ module Bombe
       # Seek in the backend. This function will take care, among other
       # things, to check if the seek is valid, or if it would try to
       # get to a negative position, and if the whence is valid.
-      def seek(amount, whence = IO::SEEK_SET)
+      def seek(amount, whence = ::IO::SEEK_SET)
         # if the backend does not implement seeking, throw an
         # exception
         raise NotImplementedError.new("seek not implemented") unless
@@ -45,13 +45,13 @@ module Bombe
           amount.is_a? Integer
 
         case whence
-        when IO::SEEK_SET
+        when ::IO::SEEK_SET
           # make sure it does not try to seek to a negative position
           raise InvalidSeek(amount, whence) unless amount >= 0
-        when IO::SEEK_CUR
+        when ::IO::SEEK_CUR
           # make sure it does not try to seek to a negative position
           raise InvalidSeek(amount, whence, tell) unless amount+tell >= 0
-        when IO::SEEK_END
+        when ::IO::SEEK_END
           # Don't allow negative seeks if there is no way to know the
           # total size of the stream (compressed files, pipes, ...)
           raise InvalidSeek(nil, whence) unless respond_to? "size_"
