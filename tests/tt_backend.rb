@@ -64,5 +64,93 @@ module Bombe
       assert_respond_to @backend, :tell
       assert_respond_to @backend, :close
     end
+
+    # Test the behaviour of the tell method on a new backend instance.
+    #
+    # Make sure that before any seek, the position in the stream is
+    # zeroed out.
+    def test_tell_new
+      assert_nothing_raised do
+        assert_equal 0, @backend.tell
+      end
+    end
+
+    # Test the behaviour of the seek and tell methods.
+    #
+    # This test ensures the correct behaviour of seek and tell
+    # functions with valid parameters. Both absolute and relative
+    # seeks are tested.
+    #
+    # The reverse seeking (starting from end) is not tested since it
+    # might not be implemented (and is never implemented for now).
+    def test_seek_tell
+      # We know that the data we use for test is at exactly 1KiB in
+      # size, so we can seek around up to that.
+      assert_nothing_raised do
+        # Seek to the middle of the file, check that the value returned
+        # by the seek method is always zero, and check that the reported
+        # position is the expected one.
+        assert_equal 0, @backend.seek(512)
+        assert_equal 512, @backend.tell
+
+        # Seek relatively to current position, check that the value
+        # returned by the seek method is always zero, and check that the
+        # reported position is the expected one.
+        assert_equal 0, @backend.seek(256, ::IO::SEEK_CUR)
+        assert_equal 768, @backend.tell
+
+        # Seeking over the end of the file is allowed, but the reads
+        # will fail since we're over the end of file.
+        assert_equal 0, @backend.seek(2048)
+        # TODO: test that the reads do return EOF
+      end
+    end
+
+    # TEST FOR INVALID SEEK REQUESTS
+    
+    # Test negative absolute seeks (they have to throw InvalidSeek)
+    def test_seek_absolute_negative
+      assert_raise Bombe::InvalidSeek do
+        @backend.seek(-1)
+      end
+    end
+
+    # Test relative seeks that would move before the start of data
+    def test_seek_relative_negative
+      # First move to a known position ...
+      assert_nothing_raised do
+        @backend.seek(128)
+      end
+
+      assert_equal 128, @backend.tell
+      
+      # ... then try to go back before the start of data
+      assert_raise Bombe::InvalidSeek do
+        @backend.seek(-256, IO::SEEK_CUR)
+      end
+    end
+
+    # TODO need to test reverse seeks, but needs a way to check if
+    # they are supported first or it would fail for backends not
+    # supporting them.
+
+    # Test non-integer amount values: strings and floating point
+    # values (should throw TypeError).
+    def test_seek_invalid_amount
+      assert_raise TypeError do
+        @backend.seek("foo")
+      end
+
+      assert_raise TypeError do
+        @backend.seek(0.1)
+      end
+    end
+    
+    # Test invalis whence values (should throw InvalidWhence)
+    def test_seek_invalid_whence
+      assert_raise InvalidWhence do
+        @backend.seek(10, "bar")
+      end
+    end
   end
 end
