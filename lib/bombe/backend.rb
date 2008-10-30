@@ -15,6 +15,8 @@
 # License along with ruby-bombe.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+require 'bombe/exceptions'
+
 module Bombe
   module Backend
 
@@ -47,19 +49,19 @@ module Bombe
         case whence
         when ::IO::SEEK_SET
           # make sure it does not try to seek to a negative position
-          raise InvalidSeek(amount, whence) unless amount >= 0
+          raise InvalidSeek.new(amount, whence) unless amount >= 0
         when ::IO::SEEK_CUR
           # make sure it does not try to seek to a negative position
-          raise InvalidSeek(amount, whence, tell) unless amount+tell >= 0
+          raise InvalidSeek.new(amount, whence, tell) unless amount+tell >= 0
         when ::IO::SEEK_END
           # Don't allow negative seeks if there is no way to know the
           # total size of the stream (compressed files, pipes, ...)
-          raise InvalidSeek(nil, whence) unless respond_to? "size_"
+          raise InvalidSeek.new(nil, whence) unless respond_to? "size_"
           # make sure it does not try to seek to a negative position
-          raise InvalidSeek(amount, whence) unless amount+size >= 0
+          raise InvalidSeek.new(amount, whence) unless amount+size >= 0
         else
           # raise an exception if the whence parameter is unknown
-          raise InvalidWhence(whence)
+          raise InvalidWhence.new(whence)
         end
 
         # finally call the implementation of this
