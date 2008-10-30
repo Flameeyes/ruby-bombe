@@ -24,12 +24,14 @@ require Pathname.new(__FILE__).dirname + 'tt_backend'
 
 require Pathname.new(__FILE__).dirname + 'tc_backend_io'
 require Pathname.new(__FILE__).dirname + 'tc_backend_file'
+require Pathname.new(__FILE__).dirname + 'tc_backend_mmap'
 
 class Bombe::TestSuite
   def self.suite
     suite = Test::Unit::TestSuite.new("ruby-bombe testsuite")
     suite << Bombe::TC_Backend_IO.suite
     suite << Bombe::TC_Backend_File.suite
+    suite << Bombe::TC_Backend_Mmap.suite
   end
 end
 

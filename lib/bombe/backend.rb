@@ -94,6 +94,35 @@ module Bombe
           respond_to? "close_"
       end
     end
+
+    # Set of functions to emulate a cursor.
+    #
+    # Include this module if the backend has no idea of cursors
+    # (because for instance it is implemented as an array of bytes.
+    module CursorEmulation
+      def tell_
+        @pos = 0 unless @pos
+
+        @pos
+      end
+
+      def seek_(amount, whence)
+        @pos = 0 unless @pos
+
+        case whence
+        when ::IO::SEEK_SET
+          @pos = amount
+        when ::IO::SEEK_CUR
+          @pos += amount
+        when ::IO::SEEK_END
+          raise Errno::EINVAL unless respond_to? :size
+          @pos = size + amount
+        end
+
+        0
+      end
+    end
+
   end
 end
 
