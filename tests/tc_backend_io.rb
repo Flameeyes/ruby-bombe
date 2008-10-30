@@ -24,5 +24,14 @@ module Bombe
       
       @backend = Backend::IO.new(File.new(file_path))
     end
+
+    # Test the behaviour when an invalid parameter is passed to the IO
+    # backend. Expected behaviour: TypeError exception is raised.
+    def test_invalid
+      assert_raise TypeError do
+        Backend::IO.new("path")
+      end
+    end
+
   end
 end
