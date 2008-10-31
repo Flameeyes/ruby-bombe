@@ -16,6 +16,7 @@
 # <http://www.gnu.org/licenses/>.
 
 require 'bombe/backend'
+require 'bombe/utils'
 
 module Bombe
   module Backend
@@ -27,8 +28,7 @@ module Bombe
     # Most of this class is just a wrap around IO methods already
     class IO < Base
       def initialize(io)
-        raise TypeError.new("wrong argument type #{io.class} (expected IO)") unless
-          io.is_a? ::IO
+        Utils::check_type(io, ::IO)
 
         @io = io
       end

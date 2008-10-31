@@ -16,6 +16,7 @@
 # <http://www.gnu.org/licenses/>.
 
 require 'bombe/exceptions'
+require 'bombe/utils'
 
 module Bombe
   module Backend
@@ -43,8 +44,7 @@ module Bombe
         
         # only accept integer amounts for seeking, check this first,
         # so that the backends can ignore it.
-        raise TypeError.new("wrong argument type #{amount.class} (expected Integer") unless
-          amount.is_a? Integer
+        Utils::check_type(amount, Integer)
 
         case whence
         when ::IO::SEEK_SET

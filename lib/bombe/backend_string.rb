@@ -16,6 +16,7 @@
 # <http://www.gnu.org/licenses/>.
 
 require 'bombe/backend'
+require 'bombe/utils'
 
 module Bombe::Backend
   # String backend
@@ -45,10 +46,7 @@ module Bombe::Backend
     # Initialise the String backend with the provided string or array.
     # If an array is given, sanity check it.
     def initialize(arg)
-      raise TypeError.new("wrong argument type #{arg.class} (expected Array or String)") unless
-        arg.is_a? ::Array or arg.is_a? ::String
-      
-      if arg.is_a? ::Array
+      if Bombe::Utils::check_type(arg, [::Array, ::String]) == ::Array
         arg.each do |el|
           # all the elements have to be integers
           raise InvalidArray unless el.is_a? Integer
