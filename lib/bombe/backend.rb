@@ -92,6 +92,8 @@ module Bombe
       def close
         raise NotImplementedError.new("close not implemented") unless
           respond_to? "close_"
+
+        close_
       end
     end
 
