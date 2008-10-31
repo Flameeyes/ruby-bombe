@@ -57,3 +57,8 @@ class Bombe::TestSuite
 end
 
 Test::Unit::UI::Console::TestRunner.run(Bombe::TestSuite)
+
+# Local Variables:
+# mode: flyspell-prog
+# ispell-local-dictionary: "english"
+# End:

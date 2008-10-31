@@ -32,3 +32,8 @@ module Bombe
     end
   end
 end
+
+# Local Variables:
+# mode: flyspell-prog
+# ispell-local-dictionary: "english"
+# End:

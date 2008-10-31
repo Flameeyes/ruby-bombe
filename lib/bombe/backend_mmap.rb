@@ -53,3 +53,8 @@ begin
 rescue LoadError
   $BOMBE_NO_MMAP = true
 end
+
+# Local Variables:
+# mode: flyspell-prog
+# ispell-local-dictionary: "english"
+# End:

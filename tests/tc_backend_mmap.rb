@@ -79,3 +79,8 @@ unless $BOMBE_NO_MMAP
     end
   end
 end
+
+# Local Variables:
+# mode: flyspell-prog
+# ispell-local-dictionary: "english"
+# End:
