@@ -19,11 +19,10 @@ require 'bombe/backend_file'
 
 module Bombe
   class TC_Backend_File < TT_Backend
-    def setup
-      super
-      
-      # TODO this has to be tested with both strings and pathnames
-      @backend = Backend::File.new(file_path.to_s)
+    # Open the backend, this is called by the sub-classes that
+    # actually implement tests
+    def open(arg)
+      @backend = Backend::File.new(arg)
     end
 
     # Specialise the class test, the backend instance is going to be
@@ -35,11 +34,36 @@ module Bombe
       assert_kind_of Backend::File, @backend
     end
 
-    # Test the behaviour when an invalid parameter is passed to the File
-    # backend. Expected behaviour: TypeError exception is raised.
-    def test_invalid
-      assert_raise TypeError do
-        Backend::File.new({})
+    class Standalone < Test::Unit::TestCase
+      # Test the behaviour when an invalid parameter is passed to the File
+      # backend. Expected behaviour: TypeError exception is raised.
+      def test_invalid_parameter
+        assert_raise TypeError do
+          Backend::File.new({})
+        end
+      end
+    end
+
+    # Test the behaviour of the File backend when providing the file
+    # path with a String instance.
+    class WithString < self
+      def setup
+        super
+        open(file_path.to_s)
+      end
+    end
+
+    # Test the behaviour of the File backend when providing the file
+    # path with a Pathname instance.
+    #
+    # Note that this should be redundant since WithString does
+    # basically the same, but it's here to ensure that the backend
+    # does not expects path _only_ being given through String
+    # instances.
+    class WithPathname < self
+      def setup
+        super
+        open(file_path)
       end
     end
 

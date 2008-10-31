@@ -31,11 +31,28 @@ require Pathname.new(__FILE__).dirname + 'tc_backend_gzip'
 class Bombe::TestSuite
   def self.suite
     suite = Test::Unit::TestSuite.new("ruby-bombe testsuite")
-    suite << Bombe::TC_Backend_IO.suite
-    suite << Bombe::TC_Backend_File.suite
-    suite << Bombe::TC_Backend_Mmap.suite
-    suite << Bombe::TC_Backend_String.suite
-    suite << Bombe::TC_Backend_Gzip.suite
+    suite << Bombe::TC_Backend_IO::Standalone.suite
+    suite << Bombe::TC_Backend_IO::WithFile.suite
+    suite << Bombe::TC_Backend_IO::WithTempfile.suite
+
+    suite << Bombe::TC_Backend_File::Standalone.suite
+    suite << Bombe::TC_Backend_File::WithString.suite
+    suite << Bombe::TC_Backend_File::WithPathname.suite
+
+    suite << Bombe::TC_Backend_Mmap::Standalone.suite
+    suite << Bombe::TC_Backend_Mmap::WithMmap.suite
+    suite << Bombe::TC_Backend_Mmap::WithPathString.suite
+    suite << Bombe::TC_Backend_Mmap::WithPathname.suite
+
+    suite << Bombe::TC_Backend_String::Standalone.suite
+    suite << Bombe::TC_Backend_String::WithString.suite
+    suite << Bombe::TC_Backend_String::WithArray.suite
+
+    suite << Bombe::TC_Backend_Gzip::Standalone.suite
+    suite << Bombe::TC_Backend_Gzip::WithReader.suite
+    suite << Bombe::TC_Backend_Gzip::WithIO.suite
+    suite << Bombe::TC_Backend_Gzip::WithPathString.suite
+    suite << Bombe::TC_Backend_Gzip::WithPathname.suite
   end
 end
 

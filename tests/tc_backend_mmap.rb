@@ -20,12 +20,10 @@ require 'bombe/backend_mmap'
 unless $BOMBE_NO_MMAP
   module Bombe
     class TC_Backend_Mmap < TT_Backend
-      def setup
-        super
-        
-        # TODO this has to be tested with strings and pathnames as well
-        # as Mmap objects.
-        @backend = Backend::Mmap.new(::Mmap.new(file_path, "r", ::Mmap::MAP_SHARED))
+      # Open the backend, this is called by the sub-classes that
+      # actually implement tests
+      def open(arg)
+        @backend = Backend::Mmap.new(arg)
       end
 
       # Specialise the class test, the backend instance is going to be
@@ -36,14 +34,48 @@ unless $BOMBE_NO_MMAP
         assert_kind_of Backend::Mmap, @backend
       end
 
-      # Test the behaviour when an invalid parameter is passed to the Mmap
-      # backend. Expected behaviour: TypeError exception is raised.
-      def test_invalid
-        assert_raise TypeError do
-          Backend::Mmap.new({})
+      class Standalone < Test::Unit::TestCase
+        # Test the behaviour when an invalid parameter is passed to the Mmap
+        # backend. Expected behaviour: TypeError exception is raised.
+        def test_invalid_parameter
+          assert_raise TypeError do
+            Backend::Mmap.new({})
+          end
         end
       end
 
+      # Test the behaviour of the Mmap backend when passing it a
+      # direct Mmap instance.
+      class WithMmap < self
+        def setup
+          super
+          open(::Mmap.new(file_path, "r", ::Mmap::MAP_SHARED))
+        end
+      end
+      
+      # Test the behaviour of the Mmap backend when passing it a
+      # String with the path of a new file to map in memory.
+      class WithPathString < self
+        def setup
+          super
+          open(file_path.to_s)
+        end
+      end
+      
+      # Test the behaviour of the Mmap backend when passing it a
+      # Pathname with the path of a new file to map in memory.
+      #
+      # Note that this should be redundant since WithPathString does
+      # basically the same, but it's here to ensure that the backend
+      # does not expects path _only_ being given through String
+      # instances.
+      class WithPathname < self
+        def setup
+          super
+          open(file_path)
+        end
+      end
+      
     end
   end
 end

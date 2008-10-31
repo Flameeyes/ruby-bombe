@@ -19,10 +19,10 @@ require 'bombe/backend_string'
 
 module Bombe
   class TC_Backend_String < TT_Backend
-    def setup
-      super
-      
-      @backend = Backend::String.new(@file_content)
+    # Open the backend, this is called by the sub-classes that
+    # actually implement tests
+    def open(arg)
+      @backend = Backend::String.new(arg)
     end
 
     # Specialise the class test, the backend instance is going to be
@@ -33,41 +33,61 @@ module Bombe
       assert_kind_of Backend::String, @backend
     end
 
-    # Test the behaviour of the String backend when providing a
-    # complex string (with NULL bytes and bytes with value 255.
-    def test_string_complex
-      assert_nothing_raised do
-        Backend::String.new("\0foobar\255\255\255\0\0\0")
+    class Standalone < Test::Unit::TestCase
+      # Test the behaviour of the String backend when providing a
+      # complex string (with NULL bytes and bytes with value 255.
+      def test_string_complex
+        assert_nothing_raised do
+          Backend::String.new("\0foobar\255\255\255\0\0\0")
+        end
+      end
+      
+      # TESTS FOR INVALID PARAMETERS
+      
+      # Test the behaviour when an invalid parameter is passed to the
+      # String backend. Expected behaviour: TypeError exception is
+      # raised.
+      def test_invalid_parameter
+        assert_raise TypeError do
+          Backend::String.new(123)
+        end
+      end
+      
+      # Test the behaviour when an array of mixed elements is passed to
+      # the String backend. Expected behaviour: InvalidArray is raised.
+      def test_invalid_mixed
+        assert_raise Backend::String::InvalidArray do
+          Backend::String.new([1, 3, "foo"])
+        end
+      end
+      
+      # Test the behaviour when an array of integers with values out of
+      # the byte range is passed to the String backend. Expected
+      # behaviour: InvalidArray is raised.
+      def test_invalid_outofrange
+        assert_raise Backend::String::InvalidArray do
+          Backend::String.new([1, 3, -1, 256])
+        end
       end
     end
 
-    # TESTS FOR INVALID PARAMETERS
-
-    # Test the behaviour when an invalid parameter is passed to the
-    # String backend. Expected behaviour: TypeError exception is
-    # raised.
-    def test_invalid_parameter
-      assert_raise TypeError do
-        Backend::String.new(123)
-      end
-    end
-    
-    # Test the behaviour when an array of mixed elements is passed to
-    # the String backend. Expected behaviour: InvalidArray is raised.
-    def test_invalid_mixed
-      assert_raise Backend::String::InvalidArray do
-        Backend::String.new([1, 3, "foo"])
+    # Test the String backend providing an actual String instance
+    class WithString < self
+      def setup
+        super
+        open @file_content
       end
     end
 
-    # Test the behaviour when an array of integers with values out of
-    # the byte range is passed to the String backend. Expected
-    # behaviour: InvalidArray is raised.
-    def test_invalid_outofrange
-      assert_raise Backend::String::InvalidArray do
-        Backend::String.new([1, 3, -1, 256])
+    # Test the String backend providing an Array instance
+    class WithArray < self
+      def setup
+        super
+        open @file_content.split(//).collect { |el| el[0] }
       end
     end
+
+    # TODO: test more Array-like classes with this backend
 
   end
 end

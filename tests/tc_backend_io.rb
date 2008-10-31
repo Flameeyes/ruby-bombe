@@ -19,10 +19,10 @@ require 'bombe/backend_io'
 
 module Bombe
   class TC_Backend_IO < TT_Backend
-    def setup
-      super
-      
-      @backend = Backend::IO.new(File.new(file_path))
+    # Open the backend, this is called by the sub-classes that
+    # actually implement tests
+    def open(arg)
+      @backend = Backend::IO.new(arg)
     end
 
     # Specialise the class test, the backend instance is going to be
@@ -33,11 +33,33 @@ module Bombe
       assert_kind_of Backend::IO, @backend
     end
 
-    # Test the behaviour when an invalid parameter is passed to the IO
-    # backend. Expected behaviour: TypeError exception is raised.
-    def test_invalid
-      assert_raise TypeError do
-        Backend::IO.new("path")
+    class Standalone < Test::Unit::TestCase
+      # Test the behaviour when an invalid parameter is passed to the IO
+      # backend. Expected behaviour: TypeError exception is raised.
+      def test_invalid_parameter
+        assert_raise TypeError do
+          Backend::IO.new("path")
+        end
+      end
+    end
+
+    # Test the IO backend providing a File instance as argument
+    class WithFile < self
+      def setup
+        super
+        open File.new(file_path)
+      end
+    end
+
+    # Test the IO backend providing a Tempfile instance as argument
+    #
+    # This will make sure that even delegated types of IO are accepted
+    # as they were real IO.
+    class WithTempfile < self
+      def setup
+        super
+        @tmpf.open
+        open @tmpf
       end
     end
 
