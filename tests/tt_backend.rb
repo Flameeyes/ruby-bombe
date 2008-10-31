@@ -75,7 +75,8 @@ module Bombe
       end
     end
 
-    # Test the behaviour of the seek and tell methods.
+    # Test the behaviour of the seek and tell methods for forward
+    # seeks.
     #
     # This test ensures the correct behaviour of seek and tell
     # functions with valid parameters. Both absolute and relative
@@ -83,7 +84,7 @@ module Bombe
     #
     # The reverse seeking (starting from end) is not tested since it
     # might not be implemented (and is never implemented for now).
-    def test_seek_tell
+    def test_seek_tell_forward
       # We know that the data we use for test is at exactly 1KiB in
       # size, so we can seek around up to that.
       assert_nothing_raised do
@@ -99,6 +100,64 @@ module Bombe
         assert_equal 0, @backend.seek(256, ::IO::SEEK_CUR)
         assert_equal 768, @backend.tell
 
+      end
+    end
+
+    # Test the behaviour of the seek and tell methods for backward
+    # seeks.
+    def test_seek_tell_backward
+      # We don't want to assert on the moving to the middle of the
+      # file, since that is tested by another test, if it fails,
+      # consider it an error rather than a failure.
+      @backend.seek(512)
+      
+      assert_nothing_raised do
+        # Try first a relative seek backward, by providing a negative
+        # amount for the seek.
+        assert_equal 0, @backend.seek(-256, ::IO::SEEK_CUR)
+        assert_equal 256, @backend.tell
+
+        # Then try an absolute backward seek by providing a position
+        # that is known to be before the current position.
+        assert_equal 0, @backend.seek(128)
+        assert_equal 128, @backend.tell
+      end
+    end
+
+    # Test the behaviour of the seek and tell methods for seeks with
+    # no movement.
+    #
+    # Since no movements at all (a relative seek of zero bytes, or an
+    # absolute seek to the same position) might be special cases for
+    # some backends, especially if seek is emulated, test these cases
+    # explicitly.
+    def test_seek_tell_no
+      # We don't want to assert on the moving to the middle of the
+      # file, since that is tested by another test, if it fails,
+      # consider it an error rather than a failure.
+      @backend.seek(512)
+      
+      assert_nothing_raised do
+        # Try first a relative seek of amount zero
+        assert_equal 0, @backend.seek(0, ::IO::SEEK_CUR)
+        assert_equal 512, @backend.tell
+
+        # Try then an absolute seek to the position returned by #tell.
+        assert_equal 0, @backend.seek(@backend.tell)
+        assert_equal 512, @backend.tell
+
+        # Try then an absolute seek to the known arbitrary position.
+        assert_equal 0, @backend.seek(512)
+        assert_equal 512, @backend.tell
+      end
+    end
+
+    # Test behaviour when seeking over the end of the data.
+    #
+    # TODO: this should probably be replaced with an exception since
+    # it won't be possible to do with compressed data backends
+    def test_seek_over
+      assert_nothing_raised do
         # Seeking over the end of the file is allowed, but the reads
         # will fail since we're over the end of file.
         assert_equal 0, @backend.seek(2048)
