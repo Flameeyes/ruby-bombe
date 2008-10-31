@@ -15,7 +15,7 @@
 # License along with ruby-bombe.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-require 'bombe/backend_mmap'
+require 'bombe/backend/mmap'
 
 unless $BOMBE_NO_MMAP
   module Bombe

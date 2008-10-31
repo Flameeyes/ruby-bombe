@@ -15,7 +15,7 @@
 # License along with ruby-bombe.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-require 'bombe/backend_file'
+require 'bombe/backend/file'
 
 module Bombe
   class TC_Backend_File < TT_Backend

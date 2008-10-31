@@ -15,7 +15,7 @@
 # License along with ruby-bombe.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-require 'bombe/backend_gzip'
+require 'bombe/backend/gzip'
 
 module Bombe
   class TC_Backend_Gzip < TT_Backend

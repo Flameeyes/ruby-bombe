@@ -15,7 +15,7 @@
 # License along with ruby-bombe.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-require 'bombe/backend_io'
+require 'bombe/backend/io'
 require 'pathname'
 
 module Bombe
