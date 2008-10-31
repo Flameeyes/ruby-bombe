@@ -49,7 +49,7 @@ module Bombe::Backend
       if Bombe::Utils::check_type(arg, [::Array, ::String]) == ::Array
         arg.each do |el|
           # all the elements have to be integers
-          raise InvalidArray unless el.is_a? Integer
+          raise InvalidArray unless el.possibly_kind_of? Integer
           # no element can have a value of 256 or more
           raise InvalidArray if el > 255
           # no element can have a value of -1 or less

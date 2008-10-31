@@ -36,7 +36,7 @@ begin
       # 
       # When creating a new memory map, map it private and read-only.
       def initialize(arg)
-        if arg.is_a? ::Mmap
+        if arg.possibly_kind_of? ::Mmap
           @mmap = arg
         else
           @mmap = ::Mmap.new(arg, "r", ::Mmap::MAP_SHARED)

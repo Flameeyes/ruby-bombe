@@ -32,9 +32,9 @@ module Bombe::Backend
     # If the argument is neither GzipReader nor IO, accept it as path
     # instead.
     def initialize(arg)
-      if arg.is_a? ::Zlib::GzipReader
+      if arg.possibly_kind_of? ::Zlib::GzipReader
         @reader = arg
-      elsif arg.is_a? ::IO
+      elsif arg.possibly_kind_of? ::IO
         @reader = ::Zlib::GzipReader.new(arg)
       else
         @reader = ::Zlib::GzipReader.new(::File.new(arg))

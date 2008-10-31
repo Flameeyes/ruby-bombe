@@ -20,6 +20,19 @@ module Bombe
   # simpler code when the same repetitive task has to be done.
   module Utils
 
+    # Monkey-patch all objects to add an extra method
+    class ::Object
+      # The #possibly_kind_of? method is just like #kind_of? but also
+      # takes care of delegated classes by checking the value of
+      # __getobj__ instance too. This is useful when you are looking
+      # to accept a given type that might be delegated (like Tempfile
+      # for IO)
+      def possibly_kind_of?(klass)
+        kind_of?(klass) or (respond_to?(:__getobj__) and
+                            __getobj__.kind_of?(klass))
+      end
+    end
+
     # Ensure that the given object is of one of the given classes,
     # including delegate classses.
     #
@@ -30,17 +43,14 @@ module Bombe
       # functions later.
       klasses = [klasses] if klasses.kind_of? Class
 
-      # First off, check if the object is of one of the given classes,
-      # if so, return true and all well.
+      # Then, check if the object is of one of the given classes, if
+      # so, return true and all well; this also includes possibly
+      # delegated classes since we're using the function we
+      # monkey-patched in earlier.
       klasses.each do |klass|
-        return klass if obj.kind_of? klass
+        return klass if obj.possibly_kind_of? klass
       end
 
-      # If we still got nothing, but the object responds to the
-      # #__getobj__ method, check that one, it would be a delegated
-      # class.
-      return check_type(obj.__getobj__, klasses) if obj.respond_to? :__getobj__
-      
       typenames = klasses.join(", ").chomp(", ")
       raise TypeError.new("wrong argument type #{obj.class} (expected #{typenames})")
     end
