@@ -61,6 +61,29 @@ describe Bombe::Backend::IO do
       @backend = Bombe::Backend::IO.new(@tmpf)
     end
   end
+
+  # Test the functioning of the code when using pipes instead (as the
+  # basic IO type).
+  #
+  # This is a type of IO stream that has no seek and tell support, for
+  # this reason it is important to test this as well as the cases
+  # above that are backed by a file where seeking is allowed.
+  describe "with pipes" do
+    it_should_behave_like "all file-backed backends"
+    it_should_behave_like "all Backend::IO instances"
+
+    before(:each) do
+      # get a pipe pair
+      rd, wr = ::IO.pipe
+
+      # Dump all the content on the pipe, and close it; the reading
+      # pipe will remain open until it's read completely.
+      wr.write @content
+      wr.close
+
+      @backend = Bombe::Backend::IO.new(rd)
+    end
+  end
 end
 
 # Local Variables:
