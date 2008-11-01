@@ -95,6 +95,18 @@ module Bombe
 
         close_
       end
+
+      # Okay now we need to inject our own little respond_to? method
+      # that can tell us whether the children classes actually respond
+      # to the given method...
+
+      WrappedMethods = [ :seek, :tell, :close, :read, :readbytes ]
+
+      def respond_to?(method)
+        return super(method) unless WrappedMethods.include? method
+
+        return super(method.to_s + "_")
+      end
     end
 
     # Set of functions to emulate a cursor.
