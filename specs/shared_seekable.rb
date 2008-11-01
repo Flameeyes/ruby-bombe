@@ -42,7 +42,7 @@ end
 # We know that the data we use for test is at exactly 1KiB in
 # size, so we can seek around up to that.
 describe "all seekable instances", :shared => true do
-  it "should report zero at the first query" do
+  it "should report zero at the first position query" do
     @backend.tell.should == 0
   end
 
@@ -79,6 +79,105 @@ describe "all seekable instances", :shared => true do
     (@backend.seek(512)).should == 0
     (@backend.seek(128, ::IO::SEEK_CUR)).should == 0
     (@backend.seek(-256, ::IO::SEEK_CUR)).should == 0
+  end
+
+  # Test negative absolute seeks (they have to throw InvalidSeek) For
+  # extra safety, try first a borderline value, then a bigger one.
+  it "should reject negative absolute seeks (border)" do
+    lambda do
+      @backend.seek(-1)
+    end.should(raise_error(Bombe::InvalidSeek) do |e|
+                 e.amount.should == -1
+                 e.whence.should == ::IO::SEEK_SET
+                 e.pos.should be_nil
+               end)
+  end
+
+  it "should reject negative absolute seeks" do
+    lambda do
+      @backend.seek(-100)
+    end.should(raise_error(Bombe::InvalidSeek) do |e|
+                 e.amount.should == -100
+                 e.whence.should == ::IO::SEEK_SET
+                 e.pos.should be_nil
+               end)
+  end
+
+  # Test relative seeks that would move before the start of
+  # data. Again, check first a border value, then a bigger value.
+  it "should reject relative seeks before start of data (border)" do
+    # First position ourselves at the middle of the file
+    @backend.seek(512)
+
+    lambda do
+      @backend.seek(-513, ::IO::SEEK_CUR)
+    end.should(raise_error(Bombe::InvalidSeek) do |e|
+                 e.amount.should == -513
+                 e.whence.should == ::IO::SEEK_CUR
+                 e.pos.should == 512 # where we seeked
+               end)
+  end
+
+  it "should reject relative seeks before start of data" do
+    # First position ourselves at the middle of the file
+    @backend.seek(512)
+
+    lambda do
+      @backend.seek(-1000, ::IO::SEEK_CUR)
+    end.should(raise_error(Bombe::InvalidSeek) do |e|
+                 e.amount.should == -1000
+                 e.whence.should == ::IO::SEEK_CUR
+                 e.pos.should == 512 # where we seeked
+               end)
+  end
+
+  it "should reject absolute seeks over the end of data (border)" do
+    pending
+  end
+
+  it "should reject absolute seeks over the end of data" do
+    pending
+  end
+
+  it "should reject relative seeks over the end of data (beginning, borer)" do
+    pending
+  end
+
+  it "should reject relative seeks over the end of data (beginning)" do
+    pending
+  end
+
+  it "should reject relative seeks over the end of data (middle, border)" do
+    pending
+  end
+
+  it "should reject relative seeks over the end of data (middle)" do
+    pending
+  end
+
+  # Test invalid parameters to the seek method
+  it "should reject seeks with invalid amounts (String)" do
+    lambda do
+      @backend.seek("foo")
+    end.should raise_error(TypeError)
+  end
+
+  it "should reject seeks with invalid amounts (Float)" do
+    lambda do
+      @backend.seek(0.1)
+    end.should raise_error(TypeError)
+  end
+
+  it "should reject seeks with invalid whences (String)" do
+    lambda do
+      @backend.seek(0, "bar")
+    end.should raise_error(Bombe::InvalidWhence)
+  end
+
+  it "should reject seeks with invalid whences (out of range number)" do
+    lambda do
+      @backend.seek(0, 123)
+    end.should raise_error(Bombe::InvalidWhence)
   end
 
 end
