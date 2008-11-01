@@ -27,6 +27,7 @@ require Pathname.new(__FILE__).dirname + 'tc_backend_file'
 require Pathname.new(__FILE__).dirname + 'tc_backend_mmap'
 require Pathname.new(__FILE__).dirname + 'tc_backend_string'
 require Pathname.new(__FILE__).dirname + 'tc_backend_gzip'
+require Pathname.new(__FILE__).dirname + 'tc_backend_socket'
 
 class Bombe::TestSuite
   def self.suite
@@ -53,6 +54,9 @@ class Bombe::TestSuite
     suite << Bombe::TC_Backend_Gzip::WithIO.suite
     suite << Bombe::TC_Backend_Gzip::WithPathString.suite
     suite << Bombe::TC_Backend_Gzip::WithPathname.suite
+
+    suite << Bombe::TC_Backend_Socket::Standalone.suite
+    suite << Bombe::TC_Backend_Socket::WithTCPSocketClient.suite
   end
 end
 
