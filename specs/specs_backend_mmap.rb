@@ -34,7 +34,11 @@ unless $BOMBE_NO_MMAP
   # class.
   describe Bombe::Backend::Mmap do
     describe "initialisation" do
-      @@klass = Bombe::Backend::Mmap
+      before(:all) do
+        @klass = Bombe::Backend::Mmap
+      end
+
+      it_should_behave_like "all file-backed backends"
       it_should_behave_like "all path-based backends"
       
       # Test the behaviour when an invalid parameter is passed to the Mmap

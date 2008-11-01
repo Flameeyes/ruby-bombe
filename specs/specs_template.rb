@@ -94,17 +94,19 @@ end
 #
 # Most file-based backends will accept paths as parameters; check some
 # possible variations here with String and Pathnames.
+#
+# Note: this does not behave like all file-backed backends since
+# compressed files backends might require the file to be compressed
+# before proceeding.
 describe "all path-based backends", :shared => true do
-  it_should_behave_like "all file-backed backends"
-
   it "should accept a String path parameter" do
-    instance = @@klass.new(@tmpf.path.to_s)
+    instance = @klass.new(@tmpf.path.to_s)
     instance.should be
     instance.close
   end
 
   it "should accept a Pathname path parameter" do
-    instance = @@klass.new(@tmpf.path)
+    instance = @klass.new(@tmpf.path)
     instance.should be
     instance.close
   end

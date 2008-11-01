@@ -31,7 +31,11 @@ end
 # class.
 describe Bombe::Backend::File do
   describe "initialisation" do
-    @@klass = Bombe::Backend::File
+    before(:all) do
+      @klass = Bombe::Backend::File
+    end
+
+    it_should_behave_like "all file-backed backends"
     it_should_behave_like "all path-based backends"
     
     # Test the behaviour when an invalid parameter is passed to the File
