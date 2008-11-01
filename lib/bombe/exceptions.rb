@@ -24,30 +24,32 @@ module Bombe
   # * termination seek that would move before the start of data;
   # * termination seek on backends not supporting the size primitive.
   class InvalidSeek < Exception
-    attr_reader :message, :amount, :whence, :pos
+    attr_reader :amount, :whence, :pos
     def initialize(amount, whence, pos = nil)
       @amount = amount
       @whence = whence
       @pos = pos
 
       if amount
-        @message = "Invalid seek #{amount} of whence #{whence}"
-        @message += " (at #{pos})" if pos
+        message = "Invalid seek #{amount} of whence #{whence}"
+        message += " (at #{pos})" if pos
       else
         # The only invalid seek with no amount is when the backend
         # does not support the size function.
-        @message = "Invalid seek of whence #{whence}"
+        message = "Invalid seek of whence #{whence}"
       end
+
+      super(message)
     end
   end
 
   # Invalid whence exception; this exception is thrown when a seek is
   # requested with an invalid whence value.
   class InvalidWhence < Exception
-    attr_reader :message, :whence
+    attr_reader :whence
     def initialize(whence)
       @whence = whence
-      @message = "Invalid whence #{whence} for seek"
+      super("Invalid whence #{whence} for seek")
     end
   end
 
@@ -64,10 +66,10 @@ module Bombe
   # or any exception at all, and the idea of bombe is that it provides
   # the same exact interface over different media.
   class NotFoundError < Exception
-    attr_reader :path, :message
+    attr_reader :path
     def initialize(path)
       @path = path
-      @message = "#{path} not found"
+      super("#{path} not found")
     end
   end
 end
