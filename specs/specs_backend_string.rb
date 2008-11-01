@@ -34,6 +34,11 @@ describe Bombe::Backend::String do
   # arrays, both valid and invalid, to make sure that the correct
   # parameters are accepted and the wrong parameters are rejected.
   describe "initialisation" do
+     before(:all) do
+      @klass = Bombe::Backend::String
+    end
+
+    it_should_behave_like "all seekable backends"
 
     # We use convenience functions here, since otherwise all the tests
     # would repeat the same exact code.  Have one for valid parameters

@@ -63,6 +63,7 @@ describe Bombe::Backend::Gzip do
 
     it_should_behave_like "all gzip-backed backends"
     it_should_behave_like "all path-based backends"
+    it_should_behave_like "all seekable backends"
 
     # Test the behaviour when an invalid parameter is passed to the
     # backend. Expected behaviour: TypeError exception is raised.
