@@ -92,12 +92,12 @@ describe Bombe::Backend::Socket do
 
       lambda do
         Bombe::Backend::Socket.new(sock)
-      end.should (raise_error(Exception) do |e|
-        # since raise_error does not accept specific Exception
-        # objects, check afterward that the correct exception is
-        # raised.
-        e.should == Bombe::ClosedStreamError
-      end)
+      end.should(raise_error(Exception) do |e|
+                   # since raise_error does not accept specific
+                   # Exception objects, check afterward that the
+                   # correct exception is raised.
+                   e.should == Bombe::ClosedStreamError
+                 end)
     end
 
     it "should accept a TCPSocket parameter" do
