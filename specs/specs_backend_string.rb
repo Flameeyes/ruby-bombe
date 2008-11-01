@@ -73,7 +73,9 @@ describe Bombe::Backend::String do
     def check_invalid_array(arg)
       lambda do
         backend = Bombe::Backend::String.new(arg)
-      end.should raise_error(Bombe::Backend::String::InvalidArray)
+      end.should(raise_error(Exception) do |e|
+                   e.should == Bombe::Backend::String::InvalidArrayError
+                 end)
     end
 
     it "should reject mixed Array parameters" do

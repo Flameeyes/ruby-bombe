@@ -37,11 +37,8 @@ module Bombe::Backend
     # Exception thrown when the array is not a byte array (for
     # instance if it is a mixed type array or if it contains integers
     # > 255 or < 0.
-    class InvalidArray < Exception
-      def message
-        "The given array is not an array of bytes."
-      end
-    end
+    InvalidArrayError =
+      Exception.new("The given array is not an array of bytes.")
 
     # Initialise the String backend with the provided string or array.
     # If an array is given, sanity check it.
@@ -49,11 +46,11 @@ module Bombe::Backend
       if Bombe::Utils::check_type(arg, [::Array, ::String]) == ::Array
         arg.each do |el|
           # all the elements have to be integers
-          raise InvalidArray unless el.possibly_kind_of? Integer
+          raise InvalidArrayError unless el.possibly_kind_of? Integer
           # no element can have a value of 256 or more
-          raise InvalidArray if el > 255
+          raise InvalidArrayError if el > 255
           # no element can have a value of -1 or less
-          raise InvalidArray if el < 0
+          raise InvalidArrayError if el < 0
         end
       end
 
