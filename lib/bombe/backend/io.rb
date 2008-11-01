@@ -30,7 +30,12 @@ module Bombe
       def initialize(io)
         Utils::check_type(io, ::IO)
 
-        raise ClosedStream.new if io.closed?
+        # If the IO channel is closed or is at end of file, raise a
+        # ClosedStreamError exception.
+        #
+        # Note: this is blocking with Socket arguments, so it might
+        # have to be rewritten before it gets into production.
+        raise Bombe::ClosedStreamError if io.closed? or io.eof?
 
         @io = io
       end

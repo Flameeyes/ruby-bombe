@@ -53,11 +53,7 @@ module Bombe
 
   # Closed stream exception; this exception is thrown whenever a
   # backend is opened on an instance that is not open.
-  class ClosedStream
-    def message
-      "Closed stream"
-    end
-  end
+  ClosedStreamError = Exception.new("Closed stream or end of file")
 
   # Exception raised when the a file or other data source cannot be
   # found. This includes non-existent files on the local filesystem,
