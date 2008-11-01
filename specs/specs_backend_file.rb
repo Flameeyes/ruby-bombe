@@ -37,7 +37,7 @@ describe Bombe::Backend::File do
 
     it_should_behave_like "all file-backed backends"
     it_should_behave_like "all path-based backends"
-    
+
     # Test the behaviour when an invalid parameter is passed to the File
     # backend. Expected behaviour: TypeError exception is raised.
     it "should not accept a Hash parameter" do
@@ -76,7 +76,7 @@ describe Bombe::Backend::File do
   # TODO: file backend should also accept file instances and Tempfiles!
   # describe "with a Tempfile parameter" do
   #   it_should_behave_like "all Backend::File instances"
-  #   
+  #
   #   before(:each) do
   #     @tmpf.open
   #     @backend = Bombe::Backend::File.new(@tmpf)
@@ -86,5 +86,6 @@ end
 
 # Local Variables:
 # mode: flyspell-prog
+# mode: whitespace
 # ispell-local-dictionary: "english"
 # End:

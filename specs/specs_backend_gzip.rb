@@ -27,7 +27,7 @@ describe "all gzip-backed backends", :shared => true do
   # since our temporary file needs to be compressed with gzip.
   before(:all) do
     @tmpf = Tempfile.new(description)
-    
+
     writer = ::Zlib::GzipWriter.new(@tmpf)
     writer.write @content
     writer.close
@@ -70,7 +70,8 @@ describe Bombe::Backend::Gzip do
       lambda do
         Bombe::Backend::Gzip.new({})
       end.should raise_error(TypeError) do |e|
-        e.message.should == "wrong argument type Hash (expected Mmap, String, File)"
+        e.message.should ==
+          "wrong argument type Hash (expected Mmap, String, File)"
       end
     end
 
@@ -95,7 +96,7 @@ describe Bombe::Backend::Gzip do
       temp.unlink
     end
   end
-  
+
   # Test the behaviour of the backend when providing an already open
   # GzipReader
   describe "with a GzipReader parameter" do
@@ -110,5 +111,6 @@ end
 
 # Local Variables:
 # mode: flyspell-prog
+# mode: whitespace
 # ispell-local-dictionary: "english"
 # End:

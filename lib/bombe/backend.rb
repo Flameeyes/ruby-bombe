@@ -32,7 +32,7 @@ module Bombe
     # specific backends need to add a postfix underscore to their
     # implementations, and they need to make it private.
     class Base
-      
+
       # Seek in the backend. This function will take care, among other
       # things, to check if the seek is valid, or if it would try to
       # get to a negative position, and if the whence is valid.
@@ -41,7 +41,7 @@ module Bombe
         # exception
         raise NotImplementedError.new("seek not implemented") unless
           respond_to? "seek_"
-        
+
         # only accept integer amounts for seeking, check this first,
         # so that the backends can ignore it.
         Utils::check_type(amount, Integer)
@@ -142,5 +142,6 @@ end
 
 # Local Variables:
 # mode: flyspell-prog
+# mode: whitespace
 # ispell-local-dictionary: "english"
 # End:

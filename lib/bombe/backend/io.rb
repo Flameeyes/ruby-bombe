@@ -29,7 +29,7 @@ module Bombe
     class IO < Base
       def initialize(io)
         Utils::check_type(io, ::IO)
-        
+
         raise ClosedStream.new if io.closed?
 
         @io = io
@@ -42,7 +42,7 @@ module Bombe
       def tell_
         @io.tell
       end
-      
+
       def close_
         @io.close
       end
@@ -52,5 +52,6 @@ end
 
 # Local Variables:
 # mode: flyspell-prog
+# mode: whitespace
 # ispell-local-dictionary: "english"
 # End:

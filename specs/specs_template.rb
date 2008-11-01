@@ -44,7 +44,6 @@ describe "all backend instances", :shared => true do
   # Close the backend after each test, since we don't want to test
   # compromised backends.
   after(:each) do
-    
     # Since this may be called more than once, make sure we only cose
     # it once, by setting it to nil afterward. This also allows us for
     # making sure that each test starts from scratch.
@@ -114,5 +113,6 @@ end
 
 # Local Variables:
 # mode: flyspell-prog
+# mode: whitespace
 # ispell-local-dictionary: "english"
 # End:

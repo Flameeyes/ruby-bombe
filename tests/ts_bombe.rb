@@ -64,5 +64,6 @@ Test::Unit::UI::Console::TestRunner.run(Bombe::TestSuite)
 
 # Local Variables:
 # mode: flyspell-prog
+# mode: whitespace
 # ispell-local-dictionary: "english"
 # End:

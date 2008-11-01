@@ -33,7 +33,7 @@ begin
       # Initialise the Mmap backend. Accept both an explicit memory
       # map or a filename; if the argument is not a memory map object,
       # assume it is meant to be used as filename.
-      # 
+      #
       # When creating a new memory map, map it private and read-only.
       def initialize(arg)
         if arg.possibly_kind_of? ::Mmap
@@ -56,5 +56,6 @@ end
 
 # Local Variables:
 # mode: flyspell-prog
+# mode: whitespace
 # ispell-local-dictionary: "english"
 # End:

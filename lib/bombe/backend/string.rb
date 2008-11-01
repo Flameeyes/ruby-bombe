@@ -42,7 +42,7 @@ module Bombe::Backend
         "The given array is not an array of bytes."
       end
     end
-    
+
     # Initialise the String backend with the provided string or array.
     # If an array is given, sanity check it.
     def initialize(arg)
@@ -69,5 +69,6 @@ end
 
 # Local Variables:
 # mode: flyspell-prog
+# mode: whitespace
 # ispell-local-dictionary: "english"
 # End:

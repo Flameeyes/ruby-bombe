@@ -34,7 +34,7 @@ module Bombe
     end
 
     # Ensure that the given object is of one of the given classes,
-    # including delegate classses.
+    # including delegate classes.
     #
     # If the object is not of one of the provided classes, not even
     # through delegation, raise a TypeError exception.
@@ -52,12 +52,14 @@ module Bombe
       end
 
       typenames = klasses.join(", ").chomp(", ")
-      raise TypeError.new("wrong argument type #{obj.class} (expected #{typenames})")
+      raise TypeError.
+        new("wrong argument type #{obj.class} (expected #{typenames})")
     end
   end
 end
 
 # Local Variables:
 # mode: flyspell-prog
+# mode: whitespace
 # ispell-local-dictionary: "english"
 # End:

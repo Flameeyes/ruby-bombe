@@ -54,7 +54,7 @@ describe Bombe::Backend::IO do
   describe "with a Tempfile parameter" do
     it_should_behave_like "all file-backed backends"
     it_should_behave_like "all Backend::IO instances"
-    
+
     # Reopen the @tmpf instance every time and use it as argument
     before(:each) do
       @tmpf.open
@@ -65,5 +65,6 @@ end
 
 # Local Variables:
 # mode: flyspell-prog
+# mode: whitespace
 # ispell-local-dictionary: "english"
 # End:

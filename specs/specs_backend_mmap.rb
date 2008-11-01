@@ -40,14 +40,15 @@ unless $BOMBE_NO_MMAP
 
       it_should_behave_like "all file-backed backends"
       it_should_behave_like "all path-based backends"
-      
+
       # Test the behaviour when an invalid parameter is passed to the Mmap
       # backend. Expected behaviour: TypeError exception is raised.
       it "should not accept a Hash parameter" do
         lambda do
           Bombe::Backend::Mmap.new({})
         end.should raise_error(TypeError) do |e|
-          e.message.should == "wrong argument type Hash (expected Mmap, String, File)"
+          e.message.should ==
+            "wrong argument type Hash (expected Mmap, String, File)"
         end
       end
     end
@@ -98,5 +99,6 @@ end
 
 # Local Variables:
 # mode: flyspell-prog
+# mode: whitespace
 # ispell-local-dictionary: "english"
 # End:
