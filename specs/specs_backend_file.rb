@@ -45,9 +45,14 @@ describe Bombe::Backend::File do
     it "should reject a Hash parameter" do
       lambda do
         Bombe::Backend::File.new({})
-      end.should raise_error(TypeError) do |e|
-        e.message.should == "wrong argument type Hash (expected String, File)"
-      end
+      end.should(raise_error(TypeError) do |e|
+                   # this is not raised by Bombe itself, but rather
+                   # by File.new when its argument cannot be
+                   # converted into a string (so it's not a valid
+                   # path).
+                   e.message.should ==
+                     "can't convert Hash into String"
+                 end)
     end
   end
 

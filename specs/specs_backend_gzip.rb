@@ -71,10 +71,14 @@ describe Bombe::Backend::Gzip do
     it "should reject a Hash parameter" do
       lambda do
         Bombe::Backend::Gzip.new({})
-      end.should raise_error(TypeError) do |e|
-        e.message.should ==
-          "wrong argument type Hash (expected Mmap, String, File)"
-      end
+      end.should(raise_error(TypeError) do |e|
+                   # this is not raised by Bombe itself, but rather
+                   # by File.new when its argument cannot be
+                   # converted into a string (so it's not a valid
+                   # path).
+                   e.message.should ==
+                     "can't convert Hash into String"
+                 end)
     end
 
     # Test the behaviour when the path to a non-compressed file is
@@ -90,9 +94,9 @@ describe Bombe::Backend::Gzip do
 
       lambda do
         Bombe::Backend::Gzip.new(temp.path)
-      end.should raise_error(Zlib::GzipFile::Error) do |e|
+      end.should(raise_error(Zlib::GzipFile::Error) do |e|
         e.message.should == "not in gzip format"
-      end
+      end)
 
       # Make sure the temporary file is deleted
       temp.unlink

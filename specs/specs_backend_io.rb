@@ -35,9 +35,10 @@ describe Bombe::Backend::IO do
     it "should reject a String parameter" do
       lambda do
         Bombe::Backend::IO.new("path")
-      end.should raise_error(TypeError) do |e|
-        e.message.should == "wrong argument type String (expected IO)"
-      end
+      end.should(raise_error(TypeError) do |e|
+                   e.message.should ==
+                     "wrong argument type String (expected IO)"
+                 end)
     end
   end
 
