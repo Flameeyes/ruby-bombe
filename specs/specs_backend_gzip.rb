@@ -51,7 +51,7 @@ describe "all Backend::Gzip instances", :shared => true do
   it_should_behave_like 'all seekable instances'
 
   it "should be a Gzip backend" do
-    @backend.class.ancestors.should include(Bombe::Backend::Gzip)
+    @backend.should be_possibly_kind_of(Bombe::Backend::Gzip)
   end
 end
 

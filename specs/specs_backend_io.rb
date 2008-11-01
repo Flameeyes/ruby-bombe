@@ -25,7 +25,7 @@ describe 'all Backend::IO instances', :shared => true do
   it_should_behave_like "all backend instances"
 
   it "should be an IO backend" do
-    @backend.class.ancestors.should include(Bombe::Backend::IO)
+    @backend.should be_possibly_kind_of(Bombe::Backend::IO)
   end
 end
 

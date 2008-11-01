@@ -22,7 +22,7 @@ describe 'all Backend::Socket instances', :shared => true do
   it_should_behave_liek 'all Backend::IO instances'
 
   it 'should be a Socket backend' do
-    @backend.class.ancestors.should include(Bombe::Backend::Socket)
+    @backend.should be_possibly_kind_of(Bombe::Backend::Socket)
   end
 end
 

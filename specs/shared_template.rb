@@ -53,7 +53,7 @@ describe "all backend instances", :shared => true do
 
   # Make sure that the backend is going to be an actual Bombe backend
   it "should be a backend" do
-    @backend.class.ancestors.should include(Bombe::Backend::Base)
+    @backend.should be_possibly_kind_of(Bombe::Backend::Base)
   end
 end
 

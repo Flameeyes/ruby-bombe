@@ -24,7 +24,7 @@ describe 'all Backend::String instances', :shared => true do
   it_should_behave_like 'all seekable instances'
 
   it "should be a String backend" do
-    @backend.class.ancestors.should include(Bombe::Backend::String)
+    @backend.should be_possibly_kind_of(Bombe::Backend::String)
   end
 end
 
