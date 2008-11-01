@@ -29,6 +29,8 @@ module Bombe
     class IO < Base
       def initialize(io)
         Utils::check_type(io, ::IO)
+        
+        raise ClosedStream.new if io.closed?
 
         @io = io
       end

@@ -50,6 +50,14 @@ module Bombe
       @message = "Invalid whence #{whence} for seek"
     end
   end
+
+  # Closed stream exception; this exception is thrown whenever a
+  # backend is opened on an instance that is not open.
+  class ClosedStream
+    def message
+      "Closed stream"
+    end
+  end
 end
 
 # Local Variables:
