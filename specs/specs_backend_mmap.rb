@@ -48,16 +48,6 @@ unless $BOMBE_NO_MMAP
       end
     end
 
-    # Test the behaviour when an invalid parameter is passed to the
-    # Mmap backend. Expected behaviour: TypeError exception is raised.
-    it "should not accept Hash for initialisation" do
-      lambda do
-        Bombe::Backend::Mmap.new({})
-      end.should raise_error(TypeError) do |e|
-        e.message.should == "wrong argument type Hash (expected String Mmap, String, File)"
-      end
-    end
-    
     # Test the behaviour of the Mmap backend when providing an already
     # open Mmap instance.
     describe "with a Mmap instance parameter" do

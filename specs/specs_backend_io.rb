@@ -31,15 +31,17 @@ end
 
 # Describe the generic functionality of the Bombe::Backend::IO class.
 describe Bombe::Backend::IO do
-  it "should not accept strings for initialisation" do
-    lambda do
-      Bombe::Backend::IO.new("path")
-    end.should raise_error(TypeError) do |e|
-      e.message.should == "wrong argument type String (expected IO)"
+  describe "initialisation" do
+    it "should not accept a String parameter" do
+      lambda do
+        Bombe::Backend::IO.new("path")
+      end.should raise_error(TypeError) do |e|
+        e.message.should == "wrong argument type String (expected IO)"
+      end
     end
   end
 
-  describe "with a file parameter" do
+  describe "with a File parameter" do
     it_should_behave_like "all file-backed backends"
     it_should_behave_like "all Backend::IO instances"
 
