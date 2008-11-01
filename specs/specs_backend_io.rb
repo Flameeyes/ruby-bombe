@@ -32,7 +32,7 @@ end
 # Describe the generic functionality of the Bombe::Backend::IO class.
 describe Bombe::Backend::IO do
   describe "initialisation" do
-    it "should not accept a String parameter" do
+    it "should reject a String parameter" do
       lambda do
         Bombe::Backend::IO.new("path")
       end.should raise_error(TypeError) do |e|

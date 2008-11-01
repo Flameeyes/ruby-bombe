@@ -43,7 +43,7 @@ unless $BOMBE_NO_MMAP
 
       # Test the behaviour when an invalid parameter is passed to the Mmap
       # backend. Expected behaviour: TypeError exception is raised.
-      it "should not accept a Hash parameter" do
+      it "should reject a Hash parameter" do
         lambda do
           Bombe::Backend::Mmap.new({})
         end.should raise_error(TypeError) do |e|

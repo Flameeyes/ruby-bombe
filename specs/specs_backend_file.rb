@@ -40,7 +40,7 @@ describe Bombe::Backend::File do
 
     # Test the behaviour when an invalid parameter is passed to the File
     # backend. Expected behaviour: TypeError exception is raised.
-    it "should not accept a Hash parameter" do
+    it "should reject a Hash parameter" do
       lambda do
         Bombe::Backend::File.new({})
       end.should raise_error(TypeError) do |e|
