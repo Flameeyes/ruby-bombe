@@ -1,10 +1,4 @@
-task :default => [:test]
-
-require 'rake/testtask'
-
-Rake::TestTask.new do |t|
-  t.test_files = 'tests/ts_bombe.rb'
-end
+task :default => [:spec]
 
 begin
   require 'spec/rake/spectask'
@@ -13,19 +7,10 @@ begin
     t.libs << [ 'lib', 'specs' ]
     t.spec_opts << "-f specdoc"
     t.spec_files = FileList['specs/shared_*.rb', 'specs/specs_*.rb']
+    t.rcov = true
   end
 rescue LoadError
   $stderr.puts "Unable to find rspec, spec testing won't be available"
-end
-
-begin
-  require 'rcov/rcovtask'
-  
-  Rcov::RcovTask.new do |t|
-    t.test_files = 'tests/ts_bombe.rb'
-  end
-rescue LoadError
-  $stderr.puts "Unable to find rcov, coverage won't be available"
 end
 
 # Local Variables:
