@@ -7,6 +7,18 @@ Rake::TestTask.new do |t|
 end
 
 begin
+  require 'spec/rake/spectask'
+  
+  Spec::Rake::SpecTask.new do |t|
+    t.libs << [ 'lib', 'specs' ]
+    t.spec_opts << "-f specdoc"
+    t.spec_files = FileList['specs/specs_*.rb']
+  end
+rescue LoadError
+  $stderr.puts "Unable to find rspec, spec testing won't be available"
+end
+
+begin
   require 'rcov/rcovtask'
   
   Rcov::RcovTask.new do |t|
