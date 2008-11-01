@@ -12,7 +12,7 @@ begin
   Spec::Rake::SpecTask.new do |t|
     t.libs << [ 'lib', 'specs' ]
     t.spec_opts << "-f specdoc"
-    t.spec_files = FileList['specs/specs_*.rb']
+    t.spec_files = FileList['specs/shared_*.rb', 'specs/specs_*.rb']
   end
 rescue LoadError
   $stderr.puts "Unable to find rspec, spec testing won't be available"

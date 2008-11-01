@@ -131,20 +131,6 @@ describe "all path-based backends", :shared => true do
   end
 end
 
-# Description for seekable backends classes.
-#
-# This shared example contain the tests to execute on the backends
-# that support seeking (like File-backed backends).
-describe "all seekable backends", :shared => true do
-  it "should have the seek_ internal method" do
-    @klass.instance_methods.should include("seek_")
-  end
-
-  it "should have the tell_ internal method" do
-    @klass.instance_methods.should include("tell_")
-  end
-end
-
 # Local Variables:
 # mode: flyspell-prog
 # mode: whitespace
