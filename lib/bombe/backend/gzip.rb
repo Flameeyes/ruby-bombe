@@ -32,12 +32,22 @@ module Bombe::Backend
     # If the argument is neither GzipReader nor IO, accept it as path
     # instead.
     def initialize(arg)
+
       if arg.possibly_kind_of? ::Zlib::GzipReader
         @reader = arg
       elsif arg.possibly_kind_of? ::IO
         @reader = ::Zlib::GzipReader.new(arg)
       else
-        @reader = ::Zlib::GzipReader.new(::File.new(arg))
+        begin
+          @reader = ::Zlib::GzipReader.new(::File.new(arg))
+
+        # if the file does not exist, File.new will throw the ENOENT
+        # exception, but we replace it with our own
+        # NotFoundError. Check the comments in exceptions.rb for an
+        # explanation on why this is done.
+        rescue Errno::ENOENT
+          raise Bombe::NotFoundError.new(arg)
+        end
       end
     end
 

@@ -58,6 +58,22 @@ module Bombe
       "Closed stream"
     end
   end
+
+  # Exception raised when the a file or other data source cannot be
+  # found. This includes non-existent files on the local filesystem,
+  # HTTP requests returning 404 errors and so on.
+  #
+  # This exception is used to replace other exceptions, like
+  # Errno::ENOENT because not all backends throw the same exception,
+  # or any exception at all, and the idea of bombe is that it provides
+  # the same exact interface over different media.
+  class NotFoundError < Exception
+    attr_reader :path, :message
+    def initialize(path)
+      @path = path
+      @message = "#{path} not found"
+    end
+  end
 end
 
 # Local Variables:

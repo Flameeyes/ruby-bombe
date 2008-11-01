@@ -109,6 +109,26 @@ describe "all path-based backends", :shared => true do
     instance.should be
     instance.close
   end
+
+  # Check that the backend rejects a path to a file that does not
+  # exist with the proper exception.
+  #
+  # This ensure that the backends behave in a consistent way when it
+  # comes to files or other data sources that don't exist (like 404
+  # errors from HTTP).
+  it "should reject a non-existent path" do
+    # request a new temporary file, with an unique name...
+    temp = Tempfile.new(description)
+    # save he path right now, since after unlinking it would be nil.
+    path = temp.path.to_s
+    # ... and then remove it so that we know for sure it does not
+    # exist.
+    temp.unlink
+
+    lambda do
+      @klass.new(path)
+    end.should raise_error(Bombe::NotFoundError)
+  end
 end
 
 # Local Variables:

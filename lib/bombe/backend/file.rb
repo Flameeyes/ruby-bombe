@@ -27,7 +27,16 @@ module Bombe
     # the IO class.
     class File < IO
       def initialize(path)
-        super(::File.new(path))
+        begin
+          super(::File.new(path))
+
+        # if the file does not exist, File.new will throw the ENOENT
+        # exception, but we replace it with our own
+        # NotFoundError. Check the comments in exceptions.rb for an
+        # explanation on why this is done.
+        rescue Errno::ENOENT
+          raise NotFoundError.new(path)
+        end
       end
     end
   end
