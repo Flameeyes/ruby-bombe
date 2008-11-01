@@ -19,7 +19,7 @@ require 'bombe/backend/socket'
 
 # Generic description for all the String instances.
 describe 'all Backend::Socket instances', :shared => true do
-  it_should_behave_liek 'all Backend::IO instances'
+  it_should_behave_like 'all Backend::IO instances'
 
   it 'should be a Socket backend' do
     @backend.should be_possibly_kind_of(Bombe::Backend::Socket)
@@ -111,6 +111,14 @@ describe Bombe::Backend::Socket do
       lambda do
         Bombe::Backend::Socket.new(nil)
       end.should raise_error(TypeError)
+    end
+  end
+
+  describe "with a TCPSocket client" do
+    it_should_behave_like "all Backend::Socket instances"
+
+    before(:each) do
+      @backend = Bombe::Backend::Socket.new(::TCPSocket.new("localhost", @port))
     end
   end
 end
