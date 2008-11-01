@@ -131,6 +131,31 @@ describe "all seekable instances", :shared => true do
                end)
   end
 
+  # Test the behaviour of the seek and tell methods for seeks with
+  # no movement.
+  #
+  # Since no movements at all (a relative seek of zero bytes, or an
+  # absolute seek to the same position) might be special cases for
+  # some backends, especially if seek is emulated, test these cases
+  # explicitly.
+  it "should allow relative seeks of zero amount" do
+    @backend.seek(512)
+    @backend.seek(0, ::IO::SEEK_CUR)
+    @backend.tell.should == 512
+  end
+
+  it "should allow absolute seek to the same position (tell)" do
+    @backend.seek(512)
+    @backend.seek(@backend.tell)
+    @backend.tell.should == 512
+  end
+
+  it "should allow absolute seek to the same position (known)" do
+    @backend.seek(512)
+    @backend.seek(512)
+    @backend.tell.should == 512
+  end
+
   it "should reject absolute seeks over the end of data (border)" do
     pending
   end
