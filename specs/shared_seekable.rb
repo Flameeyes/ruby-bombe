@@ -34,6 +34,55 @@ describe "all seekable backends", :shared => true do
   end
 end
 
+# Description for seekable backends instances
+#
+# This shared example contains the tests to execute on the actual
+# instances of seekable backends.
+#
+# We know that the data we use for test is at exactly 1KiB in
+# size, so we can seek around up to that.
+describe "all seekable instances", :shared => true do
+  it "should report zero at the first query" do
+    @backend.tell.should == 0
+  end
+
+  # Seek to the middle of the file and check that the reported
+  # position is the one expected.
+  it "should allow absolute seeking forward" do
+    @backend.seek(512)
+    @backend.tell.should == 512
+  end
+
+  it "should allow relative seeking forward" do
+    @backend.seek(512, ::IO::SEEK_CUR)
+    @backend.tell.should == 512
+  end
+
+  # Seek again to the middle of the file, then seek backward and check
+  # that the position is the one expected.
+  it "should allow absolute seeking backward" do
+    @backend.seek(512)
+    @backend.seek(384)
+    @backend.tell.should == 384
+  end
+
+  it "should allow relative seeking backward" do
+    @backend.seek(512)
+    @backend.seek(-128, ::IO::SEEK_CUR)
+    @backend.tell.should == 384
+  end
+
+  # Make sure that the seek always report zero as return value
+  #
+  # TODO: this maybe should be nil?
+  it "should always report zero at seeking" do
+    (@backend.seek(512)).should == 0
+    (@backend.seek(128, ::IO::SEEK_CUR)).should == 0
+    (@backend.seek(-256, ::IO::SEEK_CUR)).should == 0
+  end
+
+end
+
 # Local Variables:
 # mode: flyspell-prog
 # mode: whitespace

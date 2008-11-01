@@ -21,6 +21,7 @@ require 'bombe/backend/file'
 describe 'all Backend::File instances', :shared => true do
   it_should_behave_like "all file-backed backends"
   it_should_behave_like "all Backend::IO instances"
+  it_should_behave_like 'all seekable instances'
 
   it "should be a File backend" do
     @backend.class.ancestors.should include(Bombe::Backend::File)

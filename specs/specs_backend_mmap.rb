@@ -24,6 +24,7 @@ unless $BOMBE_NO_MMAP
   describe 'all Backend::Mmap instances', :shared => true do
     it_should_behave_like "all backend instances"
     it_should_behave_like "all file-backed backends"
+    it_should_behave_like 'all seekable instances'
 
     it "should be a Mmap backend" do
       @backend.class.ancestors.should include(Bombe::Backend::Mmap)
