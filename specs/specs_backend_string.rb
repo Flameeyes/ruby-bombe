@@ -33,7 +33,7 @@ describe Bombe::Backend::String do
   # backend. Test initialisation with different type of strings,
   # arrays, both valid and invalid, to make sure that the correct
   # parameters are accepted and the wrong parameters are rejected.
-  describe "initialisation" do
+  describe "class" do
      before(:all) do
       @klass = Bombe::Backend::String
     end

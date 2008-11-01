@@ -33,7 +33,7 @@ unless $BOMBE_NO_MMAP
   # Describe the generic functionality of the Bombe::Backend::Mmap
   # class.
   describe Bombe::Backend::Mmap do
-    describe "initialisation" do
+    describe "class" do
       before(:all) do
         @klass = Bombe::Backend::Mmap
       end

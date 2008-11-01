@@ -68,7 +68,7 @@ describe Bombe::Backend::Socket do
     @thread.kill
   end
 
-  describe "initialisation" do
+  describe "class" do
 
     # make sure that the Socket backend actually accepts Socket
     # instances. Note that the backend should reject closed sockets

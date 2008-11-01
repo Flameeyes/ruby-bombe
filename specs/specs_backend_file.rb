@@ -30,7 +30,7 @@ end
 # Describe the generic functionality of the Bombe::Backend::File
 # class.
 describe Bombe::Backend::File do
-  describe "initialisation" do
+  describe "class" do
     before(:all) do
       @klass = Bombe::Backend::File
     end

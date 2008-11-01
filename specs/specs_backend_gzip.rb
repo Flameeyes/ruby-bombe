@@ -56,7 +56,7 @@ end
 
 # Describe the functionality of the Bombe::Backend::Gzip class
 describe Bombe::Backend::Gzip do
-  describe "initialisation" do
+  describe "class" do
     before(:all) do
       @klass = Bombe::Backend::Gzip
     end
