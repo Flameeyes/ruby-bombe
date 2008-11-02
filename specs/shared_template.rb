@@ -162,6 +162,22 @@ describe "all path-based backends", :shared => true do
 
     temp.unlink
   end
+
+  # Just for extra safety, make sure that it is possible to access
+  # read-only files.
+  #
+  # Bombe is not designed to allow write access to a file, so we're
+  # only interested in reading them. If the file is not writable we
+  # have to be able to access it anyway.
+  it "should allow accessing read-only files" do
+    # Mark the file as read-only permission
+    @tmpf.open
+    @tmpf.chmod(0400)
+
+    backend = @klass.new(@tmpf.path)
+    backend.should be
+    backend.close
+ end
 end
 
 # Local Variables:
