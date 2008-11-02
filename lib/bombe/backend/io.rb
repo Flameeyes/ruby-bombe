@@ -57,8 +57,17 @@ module Bombe::Backend
 
     protected
 
+    # Close the actual IO instance
+    #
+    # When closing down the backend, the user can decide whether to
+    # also close the IO instance that goes behind by requesting a
+    # recursive close (through close(true) or close!).
+    #
+    # When the IO instance is created by the backend, like it's the
+    # case for the File backend when it's passed a path string, we
+    # want to close it anyway since the user won't be able to.
     def close_(recursive)
-      @io.close if recursive
+      @io.close if recursive or @force_recursive_close
     end
 
     # Special module used to extend IO instances that are

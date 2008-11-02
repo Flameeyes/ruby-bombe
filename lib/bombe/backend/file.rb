@@ -28,6 +28,7 @@ module Bombe::Backend
   class File < IO
     def initialize(path)
       begin
+        @force_recursive_close = true
         super(::File.new(path))
 
         # if the file does not exist or is not accessible, File.new
