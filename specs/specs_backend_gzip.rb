@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # This file is part of ruby-bombe
 # Copyright 2008 Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
 #
@@ -110,6 +111,36 @@ describe Bombe::Backend::Gzip do
     before(:each) do
       @tmpf.open
       @backend = Bombe::Backend::Gzip.new(::Zlib::GzipReader.new(@tmpf))
+    end
+  end
+
+  # Test the behaviour of the backend when providing an IO stream
+  describe "with an IO parameter" do
+    it_should_behave_like "all Backend::Gzip instances"
+
+    before(:each) do
+      @tmpf.open
+      @backend = Bombe::Backend::Gzip.new(@tmpf)
+    end
+ end
+
+  # Test the behaviour of the backend when providing the file path
+  # through a String parameter
+  describe "with a String path parameter" do
+    it_should_behave_like "all Backend::Gzip instances"
+
+    before(:each) do
+      @backend = Bombe::Backend::Gzip.new(@tmpf.path.to_s)
+    end
+  end
+
+  # Test the behaviour of the backend when providing the file path
+  # through a Pathname parameter
+  describe "with a Pathname path parameter" do
+    it_should_behave_like "all Backend::Gzip instances"
+
+    before(:each) do
+      @backend = Bombe::Backend::Gzip.new(@tmpf.path)
     end
   end
 end
