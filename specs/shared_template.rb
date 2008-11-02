@@ -180,7 +180,7 @@ describe "all path-based backends", :shared => true do
     backend = @klass.new(@tmpf.path)
     backend.should be
     backend.close
- end
+  end
 end
 
 # Local Variables:
