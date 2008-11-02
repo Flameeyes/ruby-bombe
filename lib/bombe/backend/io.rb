@@ -19,66 +19,63 @@
 require 'bombe/backend'
 require 'bombe/utils'
 
-module Bombe
-  module Backend
-    # IO backend
-    #
-    # This class allow accessing data from IO instances, like files,
-    # sockets, pipes, ...
-    #
-    # Most of this class is just a wrap around IO methods already
-    class IO < Base
-      def initialize(io)
-        Utils::check_type(io, ::IO)
+module Bombe::Backend
+  # IO backend
+  #
+  # This class allow accessing data from IO instances, like files,
+  # sockets, pipes, ...
+  #
+  # Most of this class is just a wrap around IO methods already
+  class IO < Base
+    def initialize(io)
+      Bombe::Utils::check_type(io, ::IO)
 
-        # If the IO channel is closed or is at end of file, raise a
-        # ClosedStreamError exception.
-        #
-        # Note: this is blocking with Socket arguments, so it might
-        # have to be rewritten before it gets into production.
-        raise Bombe::ClosedStreamError if io.closed? or io.eof?
+      # If the IO channel is closed or is at end of file, raise a
+      # ClosedStreamError exception.
+      #
+      # Note: this is blocking with Socket arguments, so it might
+      # have to be rewritten before it gets into production.
+      raise Bombe::ClosedStreamError if io.closed? or io.eof?
 
-        @io = io
+      @io = io
 
-        # Not all IO stream accept seek and tell, so before we
-        # continue we have to ensure that they do. To do this, we test
-        # the two calls and if they both are present extend the
-        # instance with the Seekable module.
-        begin
-          io.tell
-          io.seek(0)
+      # Not all IO stream accept seek and tell, so before we
+      # continue we have to ensure that they do. To do this, we test
+      # the two calls and if they both are present extend the
+      # instance with the Seekable module.
+      begin
+        io.tell
+        io.seek(0)
 
-          self.extend Seekable
+        self.extend Seekable
         # both seek and tell methods will produce an illegal pipe
         # exception if they are not supported by the current IO
         # channel. In those cases, just skip over them.
-        rescue Errno::ESPIPE
-        end
+      rescue Errno::ESPIPE
       end
+    end
 
+    protected
+
+    def close_
+      @io.close
+    end
+
+    # Special module used to extend IO instances that are
+    # seekable. This module allow to add the seek_ and tell_
+    # internal functions on a per-object basis without having to
+    # create new Method objects for each of them.
+    module Seekable
       protected
 
-      def close_
-        @io.close
+      def tell_
+        @io.tell
       end
 
-      # Special module used to extend IO instances that are
-      # seekable. This module allow to add the seek_ and tell_
-      # internal functions on a per-object basis without having to
-      # create new Method objects for each of them.
-      module Seekable
-        protected
-
-        def tell_
-          @io.tell
-        end
-
-        def seek_(amount, whence)
-          @io.seek(amount, whence)
-        end
-      end # Seekable
-
-    end
+      def seek_(amount, whence)
+        @io.seek(amount, whence)
+      end
+    end # Seekable
   end
 end
 

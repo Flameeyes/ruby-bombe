@@ -19,27 +19,25 @@
 require 'bombe/backend/io'
 require 'pathname'
 
-module Bombe
-  module Backend
-    # File backend
-    #
-    # This class is a very lightweight wrapper around Backend::IO: it
-    # accepts a string or pathname as input, opens it and passes it to
-    # the IO class.
-    class File < IO
-      def initialize(path)
-        begin
-          super(::File.new(path))
+module Bombe::Backend
+  # File backend
+  #
+  # This class is a very lightweight wrapper around Backend::IO: it
+  # accepts a string or pathname as input, opens it and passes it to
+  # the IO class.
+  class File < IO
+    def initialize(path)
+      begin
+        super(::File.new(path))
 
         # if the file does not exist or is not accessible, File.new
         # will throw some exceptions from the Errno module, but we
         # replace them with our own exceptions. Check the comments in
         # exceptions.rb for an explanation on why this is done.
-        rescue Errno::ENOENT
-          raise Bombe::NotFoundError.new(path)
-        rescue Errno::EACCES
-          raise Bombe::PermissionError.new(path)
-        end
+      rescue Errno::ENOENT
+        raise Bombe::NotFoundError.new(path)
+      rescue Errno::EACCES
+        raise Bombe::PermissionError.new(path)
       end
     end
   end
