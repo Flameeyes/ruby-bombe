@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # This file is part of ruby-bombe
 # Copyright 2008 Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
 #
@@ -39,7 +40,7 @@ module Bombe
       def seek(amount, whence = ::IO::SEEK_SET)
         # if the backend does not implement seeking, throw an
         # exception
-        raise NotImplementedError.new("seek not implemented") unless
+        raise NoMethodError.new("internal interface missing", "seek") unless
           respond_to? "seek_"
 
         # only accept integer amounts for seeking, check this first,
@@ -76,7 +77,7 @@ module Bombe
       # This function will give the position of the reading cursor in
       # the data, starting from 0 that is the start of the data.
       def tell
-        raise NotImplementedError.new("tell not implemented") unless
+        raise NoMethodError.new("internal interface missing", "tell") unless
           respond_to? "tell_"
 
         tell_
@@ -90,7 +91,7 @@ module Bombe
       # TODO: consider having a parameter to decide whether to trigger
       # cascade deletion or not.
       def close
-        raise NotImplementedError.new("close not implemented") unless
+        raise NoMethodError.new("internal interface missing", "close") unless
           respond_to? "close_"
 
         close_
