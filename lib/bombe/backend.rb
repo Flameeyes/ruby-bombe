@@ -91,19 +91,16 @@ module Bombe
       # TODO: consider having a parameter to decide whether to trigger
       # cascade deletion or not.
       def close
-        raise NoMethodError.new("internal interface missing", "close") unless
-          respond_to? "close_"
-
-        close_
+        close_ if respond_to? :close_
       end
 
       # Okay now we need to inject our own little respond_to? method
       # that can tell us whether the children classes actually respond
       # to the given method...
 
-      WrappedMethods = [ :seek, :tell, :close, :read, :readbytes ]
+      WrappedMethods = [ :seek, :tell, :read, :readbytes ]
 
-     def respond_to?(method)
+      def respond_to?(method)
         return super(method) unless WrappedMethods.include? method
 
         return super(method.to_s + "_")
