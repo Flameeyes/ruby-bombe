@@ -39,8 +39,6 @@ describe Bombe::Backend::String do
       @klass = Bombe::Backend::String
     end
 
-    it_should_behave_like "all seekable backends"
-
     # We use convenience functions here, since otherwise all the tests
     # would repeat the same exact code.  Have one for valid parameters
     # and one for invalid arrays (invalid parameters get a different

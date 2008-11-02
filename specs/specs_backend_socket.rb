@@ -74,8 +74,6 @@ describe Bombe::Backend::Socket do
       @klass = Bombe::Backend::Socket
     end
 
-    it_should_behave_like "all non-seekable backends"
-
     # make sure that the Socket backend actually accepts Socket
     # instances. Note that the backend should reject closed sockets
     # and only accept open and valid sockets, this has to be

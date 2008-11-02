@@ -20,21 +20,6 @@
 # This code is split out of specs_template.rb since it's complex
 # enough to stay on its own.
 
-# Description for non-seekable backends classes
-#
-# This shared example tests the opposite of 'all seekable backends'
-# and make sure that non-seekable backends are really handled like
-# those.
-describe 'all non-seekable backends', :shared => true do
-  it "should not have the seek_ internal method" do
-    @klass.instance_methods.should_not include("seek_")
-  end
-
-  it "should not have the tell_ internal method" do
-    @klass.instance_methods.should_not include("seek_")
-  end
-end
-
 # Description for non-seekable backends instances
 #
 # Even though we check that the class does not add the internal
@@ -48,20 +33,6 @@ describe 'all non-seekable instances', :shared => true do
 
   it 'should not respond to tell' do
     @backend.should_not respond_to :tell
-  end
-end
-
-# Description for seekable backends classes.
-#
-# This shared example contain the tests to execute on the backends
-# that support seeking (like File-backed backends).
-describe "all seekable backends", :shared => true do
-  it "should have the seek_ internal method" do
-    @klass.instance_methods.should include("seek_")
-  end
-
-  it "should have the tell_ internal method" do
-    @klass.instance_methods.should include("tell_")
   end
 end
 

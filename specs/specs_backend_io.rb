@@ -45,6 +45,7 @@ describe Bombe::Backend::IO do
   describe "with a File parameter" do
     it_should_behave_like "all file-backed backends"
     it_should_behave_like "all Backend::IO instances"
+    it_should_behave_like 'all seekable instances'
 
     # For each test open a new file instance
     before(:each) do
@@ -55,6 +56,7 @@ describe Bombe::Backend::IO do
   describe "with a Tempfile parameter" do
     it_should_behave_like "all file-backed backends"
     it_should_behave_like "all Backend::IO instances"
+    it_should_behave_like 'all seekable instances'
 
     # Reopen the @tmpf instance every time and use it as argument
     before(:each) do
@@ -72,6 +74,7 @@ describe Bombe::Backend::IO do
   describe "with pipes" do
     it_should_behave_like "all file-backed backends"
     it_should_behave_like "all Backend::IO instances"
+    it_should_behave_like "all non-seekable instances"
 
     before(:each) do
       # get a pipe pair
