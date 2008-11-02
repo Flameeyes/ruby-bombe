@@ -20,6 +20,7 @@
 begin
   require 'mmap'
   require 'bombe/backend'
+  require 'bombe/cursoremulation'
 
   module Bombe::Backend
     # Memory map backend

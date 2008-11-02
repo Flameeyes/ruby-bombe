@@ -17,6 +17,7 @@
 # <http://www.gnu.org/licenses/>.
 
 require 'bombe/backend'
+require 'bombe/cursoremulation'
 require 'bombe/utils'
 
 module Bombe::Backend
