@@ -20,6 +20,7 @@ require 'bombe/backend/socket'
 # Generic description for all the String instances.
 describe 'all Backend::Socket instances', :shared => true do
   it_should_behave_like 'all Backend::IO instances'
+  it_should_behave_like 'all non-seekable instances'
 
   it 'should be a Socket backend' do
     @backend.should be_possibly_kind_of(Bombe::Backend::Socket)
@@ -69,6 +70,11 @@ describe Bombe::Backend::Socket do
   end
 
   describe "class" do
+    before(:all) do
+      @klass = Bombe::Backend::Socket
+    end
+
+    it_should_behave_like "all non-seekable backends"
 
     # make sure that the Socket backend actually accepts Socket
     # instances. Note that the backend should reject closed sockets

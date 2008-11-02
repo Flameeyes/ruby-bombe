@@ -20,6 +20,37 @@
 # This code is split out of specs_template.rb since it's complex
 # enough to stay on its own.
 
+# Description for non-seekable backends classes
+#
+# This shared example tests the opposite of 'all seekable backends'
+# and make sure that non-seekable backends are really handled like
+# those.
+describe 'all non-seekable backends', :shared => true do
+  it "should not have the seek_ internal method" do
+    @klass.instance_methods.should_not include("seek_")
+  end
+
+  it "should not have the tell_ internal method" do
+    @klass.instance_methods.should_not include("seek_")
+  end
+end
+
+# Description for non-seekable backends instances
+#
+# Even though we check that the class does not add the internal
+# instance methods for seek and tell, we want to make sure that all
+# the instances do _not_ declare themselves as responding to the seek
+# and tell methods.
+describe 'all non-seekable instances', :shared => true do
+  it 'should not respond to seek' do
+    @backend.should_not respond_to :seek
+  end
+
+  it 'should not respond to tell' do
+    @backend.should_not respond_to :tell
+  end
+end
+
 # Description for seekable backends classes.
 #
 # This shared example contain the tests to execute on the backends
@@ -42,6 +73,17 @@ end
 # We know that the data we use for test is at exactly 1KiB in
 # size, so we can seek around up to that.
 describe "all seekable instances", :shared => true do
+  # Even though we already checked that the class for these have the
+  # internal methods, make sure they declare themselves as responding
+  # to the seek and tell methods.
+  it "should respond to seek" do
+    @backend.should respond_to :seek
+  end
+
+  it "should respond to tell" do
+    @backend.should respond_to :tell
+  end
+
   it "should report zero at the first position query" do
     @backend.tell.should == 0
   end
