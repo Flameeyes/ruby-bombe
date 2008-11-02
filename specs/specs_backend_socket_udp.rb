@@ -16,37 +16,29 @@
 # License along with ruby-bombe.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-describe "Bombe::Backend::Socket (TCP)" do
+describe "Bombe::Backend::Socket (UDP)" do
   it_should_behave_like "all backends"
   # All the socket test requires a socket where to connect; for this
-  # reason start here a thread with a TCP server to use for reading
+  # reason start here a thread with a UDP socket to use for reading
   # data from.
-  #
-  # TODO: not all the tests have to act on client socket, some should
-  # use server sockets.
   before(:all) do
-    # Pick a random port over the 10240 range; TCPServer and
-    # TCPSocket expect it to be a string, so convert it.
-    @port = (10240 + rand(1024)).to_s
+    @port = (10240 + rand(1024))
 
-    # Create a new Thread for the TCP server
+    # Create a new Thread for the UDP "server"
     @thread = Thread.new do
-      begin
-        serv = TCPServer.new("localhost", @port)
+      loop do
+        begin
+          sock = UDPSocket.new
+          sock.bind "localhost", @port
+          sock.connect "localhost", @port+1
 
-        # accept as many sockets as requests
-        while sock = serv.accept do
           # dump the random data for the test on it
           sock.write @content
           # and then close it
           sock.close
+        rescue Exception => e
+          $stderr.puts e.message
         end
-      rescue Exception => e
-        $stderr.puts e.message
-      ensure
-        # Make sure the server is closed when the thread is killed
-        # (and it will be!)
-        serv.close
       end
     end
   end
@@ -69,8 +61,9 @@ describe "Bombe::Backend::Socket (TCP)" do
     # considered.
     it "should accept a Socket parameter" do
       sock = ::Socket.new(::Socket::Constants::AF_INET,
-                          ::Socket::Constants::SOCK_STREAM,
+                          ::Socket::Constants::SOCK_DGRAM,
                           0)
+      sock.bind(::Socket.sockaddr_in(@port+1, "localhost"))
       sock.connect(::Socket.sockaddr_in(@port, "localhost"))
 
       instance = Bombe::Backend::Socket.new(sock)
@@ -78,9 +71,11 @@ describe "Bombe::Backend::Socket (TCP)" do
       instance.close
     end
 
-    it "should accept a TCPSocket parameter" do
-      instance = Bombe::Backend::Socket.
-        new(::TCPSocket.new("localhost", @port))
+    it "should accept a UDPSocket parameter" do
+      sock = ::UDPSocket.new
+      sock.bind("localhost", @port+1)
+      sock.connect("localhost", @port)
+      instance = Bombe::Backend::Socket.new(sock)
       instance.should be
       instance.close
     end
@@ -89,24 +84,28 @@ describe "Bombe::Backend::Socket (TCP)" do
   # make sure that the socket works and behave properly when using
   # TCPSocket objects. Socket and TCPSocket objects don't share the
   # same classes, so it's important to test both.
-  describe "with a TCPSocket client" do
+  describe "with a UDPSocket parameter" do
     it_should_behave_like "all Backend::Socket instances"
 
     before(:each) do
-      @backend = Bombe::Backend::Socket.new(::TCPSocket.new("localhost", @port))
+      sock = ::UDPSocket.new
+      sock.bind("localhost", @port+1)
+      sock.connect("localhost", @port)
+      @backend = Bombe::Backend::Socket.new(sock)
     end
   end
 
   # make sure that the socket works and behave properly when using
   # Socket objects. Socket and TCPSocket objects don't share the same
   # classes, so it's important to test both.
-  describe "with a Socket client" do
+  describe "with a Socket parameter" do
     it_should_behave_like "all Backend::Socket instances"
 
     before(:each) do
       sock = ::Socket.new(::Socket::Constants::AF_INET,
-                          ::Socket::Constants::SOCK_STREAM,
+                          ::Socket::Constants::SOCK_DGRAM,
                           0)
+      sock.bind(::Socket.sockaddr_in(@port+1, "localhost"))
       sock.connect(::Socket.sockaddr_in(@port, "localhost"))
 
       @backend = Bombe::Backend::Socket.new(sock)
