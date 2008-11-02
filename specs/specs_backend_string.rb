@@ -48,7 +48,7 @@ describe Bombe::Backend::String do
     def check_valid_parameter(arg)
       backend = Bombe::Backend::String.new(arg)
       backend.should be
-      backend.close
+      backend.close!
     end
 
     it "should accept a String parameter" do

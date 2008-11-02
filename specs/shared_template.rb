@@ -118,13 +118,13 @@ describe "all path-based backends", :shared => true do
   it "should accept a String path parameter" do
     instance = @klass.new(@tmpf.path.to_s)
     instance.should be
-    instance.close
+    instance.close!
   end
 
   it "should accept a Pathname path parameter" do
     instance = @klass.new(@tmpf.path)
     instance.should be
-    instance.close
+    instance.close!
   end
 
   # Check that the backend rejects a path to a file that does not
@@ -179,7 +179,7 @@ describe "all path-based backends", :shared => true do
 
     backend = @klass.new(@tmpf.path)
     backend.should be
-    backend.close
+    backend.close!
   end
 end
 

@@ -73,7 +73,7 @@ describe "Bombe::Backend::Socket (UDP)" do
 
       instance = Bombe::Backend::Socket.new(sock)
       instance.should be
-      instance.close
+      instance.close!
     end
 
     it "should accept a UDPSocket parameter" do
@@ -82,7 +82,7 @@ describe "Bombe::Backend::Socket (UDP)" do
       sock.connect("localhost", @port)
       instance = Bombe::Backend::Socket.new(sock)
       instance.should be
-      instance.close
+      instance.close!
     end
   end
 

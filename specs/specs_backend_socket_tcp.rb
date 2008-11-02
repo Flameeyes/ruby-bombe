@@ -80,14 +80,14 @@ describe "Bombe::Backend::Socket (TCP)" do
 
       instance = Bombe::Backend::Socket.new(sock)
       instance.should be
-      instance.close
+      instance.close!
     end
 
     it "should accept a TCPSocket parameter" do
       instance = Bombe::Backend::Socket.
         new(::TCPSocket.new("localhost", @port))
       instance.should be
-      instance.close
+      instance.close!
     end
   end
 
