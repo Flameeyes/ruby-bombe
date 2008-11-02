@@ -17,6 +17,8 @@
 # <http://www.gnu.org/licenses/>.
 
 require 'bombe/backend/io'
+require 'shared_template'
+require 'shared_seekable'
 
 # Generic description for all the IO instances.
 #

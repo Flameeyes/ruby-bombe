@@ -17,6 +17,9 @@
 # <http://www.gnu.org/licenses/>.
 
 require 'bombe/backend/socket'
+require 'shared_template'
+require 'shared_seekable'
+require 'specs_backend_io'
 
 # Generic description for all the String instances.
 describe 'all Backend::Socket instances', :shared => true do

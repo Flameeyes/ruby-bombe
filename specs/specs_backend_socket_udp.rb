@@ -16,6 +16,11 @@
 # License along with ruby-bombe.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+require 'bombe/backend/socket'
+require 'shared_template'
+require 'shared_seekable'
+require 'specs_backend_socket'
+
 describe "Bombe::Backend::Socket (UDP)" do
   it_should_behave_like "all backends"
   # All the socket test requires a socket where to connect; for this

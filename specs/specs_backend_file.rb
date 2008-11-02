@@ -17,6 +17,9 @@
 # <http://www.gnu.org/licenses/>.
 
 require 'bombe/backend/file'
+require 'shared_template'
+require 'shared_seekable'
+require 'specs_backend_io'
 
 # Generic description for all the File instances.
 describe 'all Backend::File instances', :shared => true do
