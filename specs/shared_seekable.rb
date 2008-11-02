@@ -58,6 +58,21 @@ describe "all seekable instances", :shared => true do
     @backend.should respond_to(:tell)
   end
 
+  # Even though we know the seekable instances have internal seek_ and
+  # tell_ methods, they should *never* be callable from outside their
+  # classes' own methods, make sure this is true.
+  it "should not allow calling seek_" do
+    lambda do
+      @backend.seek_(0, 0)
+    end.should raise_error(NoMethodError)
+  end
+
+   it "should not allow calling tell_" do
+    lambda do
+      @backend.tell_
+    end.should raise_error(NoMethodError)
+  end
+
   it "should report zero at the first position query" do
     @backend.tell.should == 0
   end

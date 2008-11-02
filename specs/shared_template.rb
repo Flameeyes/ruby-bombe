@@ -55,6 +55,19 @@ describe "all backend instances", :shared => true do
   it "should be a backend" do
     @backend.should be_possibly_kind_of(Bombe::Backend::Base)
   end
+
+  # All instances should answer to the close method, included the
+  # internal close_ method ...
+  it "should respond to the close method" do
+    @backend.should respond_to(:close)
+  end
+
+  # ... but it should not allow calling close_ directly
+  it "should not allow calling close_" do
+    lambda do
+      @backend.close_
+    end.should raise_error(NoMethodError)
+  end
 end
 
 # We use Tempfile to write a temporary file with random data for each
