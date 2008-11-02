@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # This file is part of ruby-bombe
 # Copyright 2008 Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
 #
