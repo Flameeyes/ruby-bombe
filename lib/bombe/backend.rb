@@ -99,11 +99,17 @@ module Bombe
       # instance might wish to recursively close the GzipReader
       # instance it was given at opening, so add an optional recursive
       # parameter that allows for requesting recursive closing.
+      #
+      # Some backends might allow users to pass parameters from which
+      # to build their internal data access, in which case they'd also
+      # have to close it even if the user doesn't ask them to, so
+      # allow a @force_recursive_close variable to be set to true, to
+      # force closing.
       def close(recursive = false)
         if not respond_to? :close_
           return
         elsif method(:close_).arity == 1
-          close_(recursive)
+          close_(recursive or @force_recursive_close)
         else
           close_
         end
