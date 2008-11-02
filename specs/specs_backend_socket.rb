@@ -28,66 +28,21 @@ describe 'all Backend::Socket instances', :shared => true do
   end
 end
 
-# Describe the functionality of the backend
+# Describe the functionality of the backend, for non-protocol specific
+# issues.
+#
+# This description only considers examples that are not specific to
+# TCP or UDP, and thus don't need a server thread providing access to
+# the data.
+#
+# Check specs_backend_socket_tcp.rb and specs_backend_socket_udp.rb
+# for the protocol-specific descriptions.
 describe Bombe::Backend::Socket do
   it_should_behave_like "all backends"
 
-  # All the socket test requires a socket where to connect; for this
-  # reason start here a thread with a TCP server to use for reading
-  # data from.
-  #
-  # TODO: not all the tests have to act on client socket, some should
-  # use server sockets.
-  # TODO: UDP sockets should also be tested
-  before(:all) do
-    # Pick a random port over the 10240 range; TCPServer and
-    # TCPSocket expect it to be a string, so convert it.
-    @port = (10240 + rand(1024)).to_s
-
-    # Create a new Thread for the TCP server
-    @thread = Thread.new do
-      begin
-        serv = TCPServer.new(@port)
-
-        # accept as many sockets as requests
-        while sock = serv.accept do
-          # dump the random data for the test on it
-          sock.write @content
-          # and then close it
-          sock.close
-        end
-      rescue Exception => e
-        $stderr.puts e.message
-      ensure
-        # Make sure the server is closed when the thread is killed
-        # (and it will be!)
-        serv.close
-      end
-    end
-  end
-
-  after(:all) do
-    @thread.kill
-  end
-
-  describe "class" do
+ describe "class" do
     before(:all) do
       @klass = Bombe::Backend::Socket
-    end
-
-    # make sure that the Socket backend actually accepts Socket
-    # instances. Note that the backend should reject closed sockets
-    # and only accept open and valid sockets, this has to be
-    # considered.
-    it "should accept a Socket parameter" do
-      sock = ::Socket.new(::Socket::Constants::AF_INET,
-                          ::Socket::Constants::SOCK_STREAM,
-                          0)
-      sock.connect(::Socket.sockaddr_in(@port, "localhost"))
-
-      instance = Bombe::Backend::Socket.new(sock)
-      instance.should be
-      instance.close
     end
 
     it 'should reject not opened sockets' do
@@ -105,25 +60,10 @@ describe Bombe::Backend::Socket do
                  end)
     end
 
-    it "should accept a TCPSocket parameter" do
-      instance = Bombe::Backend::Socket.
-        new(::TCPSocket.new("localhost", @port))
-      instance.should be
-      instance.close
-    end
-
     it "should reject a nil parameter" do
       lambda do
         Bombe::Backend::Socket.new(nil)
       end.should raise_error(TypeError)
-    end
-  end
-
-  describe "with a TCPSocket client" do
-    it_should_behave_like "all Backend::Socket instances"
-
-    before(:each) do
-      @backend = Bombe::Backend::Socket.new(::TCPSocket.new("localhost", @port))
     end
   end
 end
