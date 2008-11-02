@@ -48,7 +48,7 @@ describe "all backend instances", :shared => true do
     # Since this may be called more than once, make sure we only cose
     # it once, by setting it to nil afterward. This also allows us for
     # making sure that each test starts from scratch.
-    @backend.close unless @backend.nil?
+    @backend.close! unless @backend.nil?
     @backend = nil
   end
 
