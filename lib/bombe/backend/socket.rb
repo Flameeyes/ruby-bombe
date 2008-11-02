@@ -41,12 +41,6 @@ module Bombe::Backend
 
       super(arg)
     end
-
-    # Since we cannot seek, remove the seek and tell methods so that
-    # they can't be accessed. Note that we remove the _internal_
-    # methods, not the public methods from Base!
-    undef_method :seek_
-    undef_method :tell_
   end
 end
 

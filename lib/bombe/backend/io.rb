@@ -38,14 +38,28 @@ module Bombe
         raise Bombe::ClosedStreamError if io.closed? or io.eof?
 
         @io = io
-      end
 
-      def seek_(amount, whence)
-        @io.seek(amount, whence)
-      end
+        # Not all IO stream accept seek and tell, so before we
+        # continue we have to ensure that they do. To do this, we test
+        # the two calls and note down the missing ones.
+        begin
+          io.tell
+          def self.tell_
+            @io.tell
+          end
+        # even a tell request will produce an illegal pipe exception.
+        rescue Errno::ESPIPE
+        end
 
-      def tell_
-        @io.tell
+        begin
+          io.seek(0)
+          def self.seek_(amount, whence)
+            @io.seek(amount, whence)
+          end
+        # even a tell request will produce an illegal pipe exception.
+        rescue Errno::ESPIPE
+        end
+
       end
 
       def close_
