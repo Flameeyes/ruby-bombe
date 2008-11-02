@@ -41,30 +41,38 @@ module Bombe
 
         # Not all IO stream accept seek and tell, so before we
         # continue we have to ensure that they do. To do this, we test
-        # the two calls and note down the missing ones.
+        # the two calls and if they both are present extend the
+        # instance with the Seekable module.
         begin
           io.tell
-          def self.tell_
-            @io.tell
-          end
-        # even a tell request will produce an illegal pipe exception.
-        rescue Errno::ESPIPE
-        end
-
-        begin
           io.seek(0)
-          def self.seek_(amount, whence)
-            @io.seek(amount, whence)
-          end
-        # even a tell request will produce an illegal pipe exception.
+
+          self.extend Seekable
+        # both seek and tell methods will produce an illegal pipe
+        # exception if they are not supported by the current IO
+        # channel. In those cases, just skip over them.
         rescue Errno::ESPIPE
         end
-
       end
 
       def close_
         @io.close
       end
+
+      # Special module used to extend IO instances that are
+      # seekable. This module allow to add the seek_ and tell_
+      # internal functions on a per-object basis without having to
+      # create new Method objects for each of them.
+      module Seekable
+        def tell_
+          @io.tell
+        end
+
+        def seek_(amount, whence)
+          @io.seek(amount, whence)
+        end
+      end # Seekable
+
     end
   end
 end
