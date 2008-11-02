@@ -91,12 +91,13 @@ describe "Bombe::Backend::Socket (UDP)" do
   # same classes, so it's important to test both.
   describe "with a UDPSocket parameter" do
     it_should_behave_like "all Backend::Socket instances"
+    it_should_behave_like "all Backend::IO instances with opt-out close"
 
     before(:each) do
-      sock = ::UDPSocket.new
-      sock.bind("localhost", @port+1)
-      sock.connect("localhost", @port)
-      @backend = Bombe::Backend::Socket.new(sock)
+      @io = ::UDPSocket.new
+      @io.bind("localhost", @port+1)
+      @io.connect("localhost", @port)
+      @backend = Bombe::Backend::Socket.new(@io)
     end
   end
 
@@ -105,15 +106,16 @@ describe "Bombe::Backend::Socket (UDP)" do
   # classes, so it's important to test both.
   describe "with a Socket parameter" do
     it_should_behave_like "all Backend::Socket instances"
+    it_should_behave_like "all Backend::IO instances with opt-out close"
 
     before(:each) do
-      sock = ::Socket.new(::Socket::Constants::AF_INET,
-                          ::Socket::Constants::SOCK_DGRAM,
-                          0)
-      sock.bind(::Socket.sockaddr_in(@port+1, "localhost"))
-      sock.connect(::Socket.sockaddr_in(@port, "localhost"))
+      @io = ::Socket.new(::Socket::Constants::AF_INET,
+                         ::Socket::Constants::SOCK_DGRAM,
+                         0)
+      @io.bind(::Socket.sockaddr_in(@port+1, "localhost"))
+      @io.connect(::Socket.sockaddr_in(@port, "localhost"))
 
-      @backend = Bombe::Backend::Socket.new(sock)
+      @backend = Bombe::Backend::Socket.new(@io)
     end
   end
 end

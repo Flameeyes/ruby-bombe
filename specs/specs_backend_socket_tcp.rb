@@ -96,9 +96,11 @@ describe "Bombe::Backend::Socket (TCP)" do
   # same classes, so it's important to test both.
   describe "with a TCPSocket client" do
     it_should_behave_like "all Backend::Socket instances"
+    it_should_behave_like "all Backend::IO instances with opt-out close"
 
     before(:each) do
-      @backend = Bombe::Backend::Socket.new(::TCPSocket.new("localhost", @port))
+      @io = ::TCPSocket.new("localhost", @port)
+      @backend = Bombe::Backend::Socket.new(@io)
     end
   end
 
@@ -107,14 +109,15 @@ describe "Bombe::Backend::Socket (TCP)" do
   # classes, so it's important to test both.
   describe "with a Socket client" do
     it_should_behave_like "all Backend::Socket instances"
+    it_should_behave_like "all Backend::IO instances with opt-out close"
 
     before(:each) do
-      sock = ::Socket.new(::Socket::Constants::AF_INET,
+      @io = ::Socket.new(::Socket::Constants::AF_INET,
                           ::Socket::Constants::SOCK_STREAM,
                           0)
-      sock.connect(::Socket.sockaddr_in(@port, "localhost"))
+      @io.connect(::Socket.sockaddr_in(@port, "localhost"))
 
-      @backend = Bombe::Backend::Socket.new(sock)
+      @backend = Bombe::Backend::Socket.new(@io)
     end
   end
 end

@@ -32,6 +32,40 @@ describe 'all Backend::IO instances', :shared => true do
   end
 end
 
+# Shared examples for handling of recursive close method
+#
+# These examples work on the basis that an IO backend might leave the
+# IO stream it tethers to open after closing, if recursive close is
+# not used.
+describe "all Backend::IO instances with opt-out close", :shared => true do
+  it "should leave the IO stream open after non-recursive closing" do
+    # ensure the @io variable is defined.
+    @io.should be
+
+    # non-recursively close the backend, and set it to nil so that
+    # after(:each) won't try to close it again
+    @backend.close(false)
+    @backend = nil
+
+    @io.should_not be_closed
+
+    # Close it afterward since we don't want to leak it
+    @io.close
+  end
+
+  it "should not leave the IO stream open after recursive closing" do
+    # ensure the @io variable is defined.
+    @io.should be
+
+    # recursively close the backend, and set it to nil so that
+    # after(:each) won't try to close it again
+    @backend.close(true)
+    @backend = nil
+
+    @io.should be_closed
+  end
+end
+
 # Describe the generic functionality of the Bombe::Backend::IO class.
 describe Bombe::Backend::IO do
   describe "class" do
@@ -49,10 +83,12 @@ describe Bombe::Backend::IO do
     it_should_behave_like "all file-backed backends"
     it_should_behave_like "all Backend::IO instances"
     it_should_behave_like 'all seekable instances'
+    it_should_behave_like "all Backend::IO instances with opt-out close"
 
     # For each test open a new file instance
     before(:each) do
-      @backend = Bombe::Backend::IO.new(File.new(@tmpf.path))
+      @io = File.new(@tmpf.path)
+      @backend = Bombe::Backend::IO.new(@io)
     end
   end
 
@@ -60,11 +96,13 @@ describe Bombe::Backend::IO do
     it_should_behave_like "all file-backed backends"
     it_should_behave_like "all Backend::IO instances"
     it_should_behave_like 'all seekable instances'
+    it_should_behave_like "all Backend::IO instances with opt-out close"
 
     # Reopen the @tmpf instance every time and use it as argument
     before(:each) do
       @tmpf.open
-      @backend = Bombe::Backend::IO.new(@tmpf)
+      @io = @tmpf
+      @backend = Bombe::Backend::IO.new(@io)
     end
   end
 
@@ -78,17 +116,18 @@ describe Bombe::Backend::IO do
     it_should_behave_like "all file-backed backends"
     it_should_behave_like "all Backend::IO instances"
     it_should_behave_like "all non-seekable instances"
+    it_should_behave_like "all Backend::IO instances with opt-out close"
 
     before(:each) do
       # get a pipe pair
-      rd, wr = ::IO.pipe
+      @io, wr = ::IO.pipe
 
       # Dump all the content on the pipe, and close it; the reading
       # pipe will remain open until it's read completely.
       wr.write @content
       wr.close
 
-      @backend = Bombe::Backend::IO.new(rd)
+      @backend = Bombe::Backend::IO.new(@io)
     end
   end
 end
