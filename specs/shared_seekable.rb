@@ -28,11 +28,11 @@
 # and tell methods.
 describe 'all non-seekable instances', :shared => true do
   it 'should not respond to seek' do
-    @backend.should_not respond_to :seek
+    @backend.should_not respond_to(:seek)
   end
 
   it 'should not respond to tell' do
-    @backend.should_not respond_to :tell
+    @backend.should_not respond_to(:tell)
   end
 end
 
@@ -48,11 +48,11 @@ describe "all seekable instances", :shared => true do
   # internal methods, make sure they declare themselves as responding
   # to the seek and tell methods.
   it "should respond to seek" do
-    @backend.should respond_to :seek
+    @backend.should respond_to(:seek)
   end
 
   it "should respond to tell" do
-    @backend.should respond_to :tell
+    @backend.should respond_to(:tell)
   end
 
   it "should report zero at the first position query" do
