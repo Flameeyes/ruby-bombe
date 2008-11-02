@@ -57,8 +57,8 @@ module Bombe::Backend
 
     protected
 
-    def close_
-      @io.close
+    def close_(recursive)
+      @io.close if recursive
     end
 
     # Special module used to extend IO instances that are
