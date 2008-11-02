@@ -88,10 +88,32 @@ module Bombe
       # This function allows to free the resources used by the backend
       # (file descriptors, memory maps, temporary files, ...).
       #
-      # TODO: consider having a parameter to decide whether to trigger
-      # cascade deletion or not.
-      def close
-        close_ if respond_to? :close_
+      # Since all the backends should be closed after use is
+      # terminated, this function cannot raise exceptions for missing
+      # implementations; on the other hand, backends might not require
+      # any task after use, so allow the internal close_ method to be
+      # missing.
+      #
+      # Also, some backends allow recursive destruction for the
+      # arguments they are passed; for instance a Gzip backend
+      # instance might wish to recursively close the GzipReader
+      # instance it was given at opening, so add an optional recursive
+      # parameter that allows for requesting recursive closing.
+      def close(recursive = false)
+        if not respond_to? :close_
+          return
+        elsif method(:close_).arity == 1
+          close_(recursive)
+        else
+          close_
+        end
+      end
+
+      # To be consistent with other Ruby standard classes, provide a
+      # close! method that always requests recursive closing of the
+      # backend.
+      def close!
+        close(true)
       end
 
       # Okay now we need to inject our own little respond_to? method

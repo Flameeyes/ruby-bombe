@@ -57,13 +57,16 @@ describe "all backend instances", :shared => true do
     @backend.should be_possibly_kind_of(Bombe::Backend::Base)
   end
 
-  # All instances should answer to the close method, included the
-  # internal close_ method ...
+  # All instances should answer to the close method
   it "should respond to the close method" do
     @backend.should respond_to(:close)
   end
 
-  # ... but it should not allow calling close_ directly
+  it "should respond to the close! method" do
+    @backend.should respond_to(:close!)
+  end
+
+  # But no instance should not allow calling close_ directly
   it "should not allow calling close_" do
     lambda do
       @backend.close_
