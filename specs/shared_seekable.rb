@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # This file is part of ruby-bombe
 # Copyright 2008 Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
 #
@@ -21,19 +22,32 @@
 # enough to stay on its own.
 
 # Description for non-seekable backends instances
-#
-# Make sure seekable backends respond to the seek and tell
-# methods. Although all the backends technically have those methods
-# (they are defined in Backend::Base), they are also hidden when their
-# internal counterpart is missing. Make sure that they are hidden
-# here.
 describe 'all non-seekable instances', :shared => true do
+  # Make sure non-seekable backends don't respond to the seek and tell
+  # methods. Although all the backends technically have those methods
+  # (they are defined in Backend::Base), they are also hidden when their
+  # internal counterpart is missing. Make sure that they are hidden
+  # here.
   it 'should not respond to seek' do
     @backend.should_not respond_to(:seek)
   end
 
   it 'should not respond to tell' do
     @backend.should_not respond_to(:tell)
+  end
+
+  # Ensure that calling the seek and tell methods raise the
+  # NoMethodError exception like if they weren't present at all.
+  it 'should raise exception when calling seek' do
+    lambda do
+      @backend.seek(0)
+    end.should raise_error(NoMethodError)
+  end
+
+  it 'should raise exception when calling tell' do
+    lambda do
+      @backend.tell
+    end.should raise_error(NoMethodError)
   end
 end
 
