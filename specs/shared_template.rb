@@ -143,6 +143,25 @@ describe "all path-based backends", :shared => true do
       @klass.new(path)
     end.should raise_error(Bombe::NotFoundError)
   end
+
+  # Check that the backend rejects opening a file that is not readable
+  # to the user.
+  #
+  # This ensure that the backends behave in a cosnistent way when it
+  # comes to files or other data sources that are not accessible (like
+  # 403 errors from HTTP).
+  it "should reject an inaccessible path" do
+    # request a new temporary file
+    temp = Tempfile.new(description)
+    # and remove all its permissions
+    temp.chmod(0000)
+
+    lambda do
+      @klass.new(temp.path)
+    end.should raise_error(Bombe::PermissionError)
+
+    temp.unlink
+  end
 end
 
 # Local Variables:
