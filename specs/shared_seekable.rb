@@ -22,10 +22,11 @@
 
 # Description for non-seekable backends instances
 #
-# Even though we check that the class does not add the internal
-# instance methods for seek and tell, we want to make sure that all
-# the instances do _not_ declare themselves as responding to the seek
-# and tell methods.
+# Make sure seekable backends respond to the seek and tell
+# methods. Although all the backends technically have those methods
+# (they are defined in Backend::Base), they are also hidden when their
+# internal counterpart is missing. Make sure that they are hidden
+# here.
 describe 'all non-seekable instances', :shared => true do
   it 'should not respond to seek' do
     @backend.should_not respond_to(:seek)
@@ -44,9 +45,11 @@ end
 # We know that the data we use for test is at exactly 1KiB in
 # size, so we can seek around up to that.
 describe "all seekable instances", :shared => true do
-  # Even though we already checked that the class for these have the
-  # internal methods, make sure they declare themselves as responding
-  # to the seek and tell methods.
+  # Make sure seekable backends respond to the seek and tell
+  # methods. Although all the backends technically have those methods
+  # (they are defined in Backend::Base), they are also hidden when
+  # their internal counterpart is missing. Make sure they are present
+  # here.
   it "should respond to seek" do
     @backend.should respond_to(:seek)
   end

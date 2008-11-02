@@ -102,7 +102,7 @@ module Bombe
 
       WrappedMethods = [ :seek, :tell, :close, :read, :readbytes ]
 
-      def respond_to?(method)
+     def respond_to?(method)
         return super(method) unless WrappedMethods.include? method
 
         return super(method.to_s + "_")
