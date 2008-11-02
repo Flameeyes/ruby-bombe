@@ -51,6 +51,8 @@ module Bombe::Backend
       end
     end
 
+    protected
+
     def tell_
       @reader.tell
     end

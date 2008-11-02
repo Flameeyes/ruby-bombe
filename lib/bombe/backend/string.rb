@@ -57,6 +57,8 @@ module Bombe::Backend
       @array = arg
     end
 
+    protected
+
     # Don't do anything, it's not needed
     def close_
     end

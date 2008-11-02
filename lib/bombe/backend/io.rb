@@ -55,6 +55,8 @@ module Bombe
         end
       end
 
+      protected
+
       def close_
         @io.close
       end
@@ -64,6 +66,8 @@ module Bombe
       # internal functions on a per-object basis without having to
       # create new Method objects for each of them.
       module Seekable
+        protected
+
         def tell_
           @io.tell
         end

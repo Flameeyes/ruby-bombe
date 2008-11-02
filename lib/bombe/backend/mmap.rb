@@ -52,6 +52,8 @@ begin
         end
       end
 
+      protected
+
       # Close the memory map, this means removing the memory mapping.
       def close_
         @mmap.munmap

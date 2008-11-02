@@ -114,6 +114,8 @@ module Bombe
     # Include this module if the backend has no idea of cursors
     # (because for instance it is implemented as an array of bytes.
     module CursorEmulation
+      protected
+
       def tell_
         @pos = 0 unless @pos
 
