@@ -38,7 +38,7 @@ module Bombe::Backend
       # be listed separately; nonetheless, they are both IO instances,
       # which is good for us. To add support for UDP or other sockets,
       # add them to the array here.
-      Bombe::Utils::check_type(arg, [::Socket, ::TCPSocket])
+      Bombe::Utils::check_type(arg, [::Socket, ::TCPSocket, ::UDPSocket])
 
       super(arg)
     end
