@@ -32,7 +32,7 @@ describe "Bombe::Backend::Socket (TCP)" do
     # Create a new Thread for the TCP server
     @thread = Thread.new do
       begin
-        serv = TCPServer.new(@port)
+        serv = TCPServer.new("localhost", @port)
 
         # accept as many sockets as requests
         while sock = serv.accept do
