@@ -40,14 +40,16 @@ begin
         if arg.possibly_kind_of? ::Mmap
           @mmap = arg
         else
-          # Mmap.new only raises ArgumentError when the file does not
-          # exist, but that makes it a bit uncertain to detect the
-          # error condition for sure, so check for the existence
-          # beforehand.
+          # When a file at the given path does not exist, or it is not
+          # accessible, Mmap.new raises ArgumentError, but that makes
+          # it impossible to discern the two cases, so check it first
+          # with File class utility functions.
           #
           # Useful side-effect: we make sure that the argument can be
-          # converted to String since File.exist? checks that for us.
+          # converted to String since File functions check that for
+          # us.
           raise Bombe::NotFoundError.new(arg) unless ::File.exist?(arg)
+          raise Bombe::PermissionError.new(arg) unless ::File.readable?(arg)
 
           @mmap = ::Mmap.new(arg, "r", ::Mmap::MAP_SHARED)
         end

@@ -58,7 +58,7 @@ module Bombe
   # backend is opened on an instance that is not open.
   ClosedStreamError = Exception.new("Closed stream or end of file")
 
-  # Exception raised when the a file or other data source cannot be
+  # Exception raised when a file or other data source cannot be
   # found. This includes non-existent files on the local filesystem,
   # HTTP requests returning 404 errors and so on.
   #
@@ -71,6 +71,22 @@ module Bombe
     def initialize(path)
       @path = path
       super("#{path} not found")
+    end
+  end
+
+  # Exception raised when the a file or other data source cannot be
+  # accessed for permission problems (like a file for which the user
+  # has no read permissions, or a 403 error returned by HTTP).
+  #
+  # This exception is used to replace other exceptions, like
+  # Errno::ENOENT because not all backends throw the same exception,
+  # or any exception at all, and the idea of bombe is that it provides
+  # the same exact interface over different media.
+  class PermissionError < Exception
+    attr_reader :path
+    def initialzie(path)
+      @path = path
+      super("Permission denied accessing #{path}")
     end
   end
 end

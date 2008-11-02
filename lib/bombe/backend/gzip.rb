@@ -42,12 +42,14 @@ module Bombe::Backend
         begin
           @reader = ::Zlib::GzipReader.new(::File.new(arg))
 
-        # if the file does not exist, File.new will throw the ENOENT
-        # exception, but we replace it with our own
-        # NotFoundError. Check the comments in exceptions.rb for an
-        # explanation on why this is done.
+        # if the file does not exist or is not accessible, File.new
+        # will throw some exceptions from the Errno module, but we
+        # replace them with our own exceptions. Check the comments in
+        # exceptions.rb for an explanation on why this is done.
         rescue Errno::ENOENT
           raise Bombe::NotFoundError.new(arg)
+        rescue Errno::EACCES
+          raise Bombe::PermissionError.new(arg)
         end
       end
     end

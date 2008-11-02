@@ -31,12 +31,14 @@ module Bombe
         begin
           super(::File.new(path))
 
-        # if the file does not exist, File.new will throw the ENOENT
-        # exception, but we replace it with our own
-        # NotFoundError. Check the comments in exceptions.rb for an
-        # explanation on why this is done.
+        # if the file does not exist or is not accessible, File.new
+        # will throw some exceptions from the Errno module, but we
+        # replace them with our own exceptions. Check the comments in
+        # exceptions.rb for an explanation on why this is done.
         rescue Errno::ENOENT
-          raise NotFoundError.new(path)
+          raise Bombe::NotFoundError.new(path)
+        rescue Errno::EACCES
+          raise Bombe::PermissionError.new(path)
         end
       end
     end
