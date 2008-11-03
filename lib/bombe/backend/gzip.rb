@@ -33,14 +33,19 @@ module Bombe::Backend
     # If the argument is neither GzipReader nor IO, accept it as path
     # instead.
     def initialize(arg)
+      super()
 
       if arg.possibly_kind_of? ::Zlib::GzipReader
         @reader = arg
+        @teardown_recursive << @reader.method(:close)
       elsif arg.possibly_kind_of? ::IO
         @reader = ::Zlib::GzipReader.new(arg)
+        @teardown_recursive << arg.method(:close)
+        @teardown_always << @reader.method(:close)
       else
         begin
           @reader = ::Zlib::GzipReader.new(::File.new(arg))
+          @teardown_always << @reader.method(:close)
 
         # if the file does not exist or is not accessible, File.new
         # will throw some exceptions from the Errno module, but we
@@ -87,10 +92,6 @@ module Bombe::Backend
         @reader.rewind
         @reader.read(newpos)
       end
-    end
-
-    def close_
-      @reader.close
     end
   end
 end

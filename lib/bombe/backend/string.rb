@@ -45,6 +45,8 @@ module Bombe::Backend
     # Initialise the String backend with the provided string or array.
     # If an array is given, sanity check it.
     def initialize(arg)
+      super()
+
       if Bombe::Utils::check_type(arg, [::Array, ::String]) == ::Array
         arg.each do |el|
           # all the elements have to be integers

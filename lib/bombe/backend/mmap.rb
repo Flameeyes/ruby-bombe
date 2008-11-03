@@ -38,8 +38,11 @@ begin
       #
       # When creating a new memory map, map it private and read-only.
       def initialize(arg)
+        super()
+
         if arg.possibly_kind_of? ::Mmap
           @mmap = arg
+          @teardown_recursive << @mmap.method(:munmap)
         else
           # When a file at the given path does not exist, or it is not
           # accessible, Mmap.new raises ArgumentError, but that makes
@@ -53,16 +56,9 @@ begin
           raise Bombe::PermissionError.new(arg) unless ::File.readable?(arg)
 
           @mmap = ::Mmap.new(arg, "r", ::Mmap::MAP_SHARED)
+          @teardown_always << @mmap.method(:munmap)
         end
       end
-
-      protected
-
-      # Close the memory map, this means removing the memory mapping.
-      def close_
-        @mmap.munmap
-      end
-
     end
   end
 rescue LoadError

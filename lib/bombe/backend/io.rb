@@ -27,7 +27,7 @@ module Bombe::Backend
   #
   # Most of this class is just a wrap around IO methods already
   class IO < Base
-    def initialize(io)
+    def initialize(io, close_on_close = false)
       Bombe::Utils::check_type(io, ::IO)
 
       # If the IO channel is closed or is at end of file, raise a
@@ -36,6 +36,8 @@ module Bombe::Backend
       # Note: this is blocking with Socket arguments, so it might
       # have to be rewritten before it gets into production.
       raise Bombe::ClosedStreamError if io.closed? or io.eof?
+
+      super()
 
       @io = io
 
@@ -53,22 +55,17 @@ module Bombe::Backend
         # channel. In those cases, just skip over them.
       rescue Errno::ESPIPE
       end
+
+      # Add the close method to the correct array depending on the
+      # close_on_close parameter.
+      if close_on_close
+        @teardown_always << @io.method(:close)
+      else
+        @teardown_recursive << @io.method(:close)
+      end
     end
 
     protected
-
-    # Close the actual IO instance
-    #
-    # When closing down the backend, the user can decide whether to
-    # also close the IO instance that goes behind by requesting a
-    # recursive close (through close(true) or close!).
-    #
-    # If the child class built the IO instance itself, it should set
-    # @force_recursive_close to true so that the instances are always
-    # deleted.
-    def close_(recursive)
-      @io.close if recursive
-    end
 
     # Special module used to extend IO instances that are
     # seekable. This module allow to add the seek_ and tell_

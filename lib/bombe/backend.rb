@@ -33,6 +33,10 @@ module Bombe
     # specific backends need to add a postfix underscore to their
     # implementations, and they need to make it private.
     class Base
+     def initialize
+        @teardown_always = []
+        @teardown_recursive = []
+     end
 
       # Seek in the backend. This function will take care, among other
       # things, to check if the seek is valid, or if it would try to
@@ -100,18 +104,27 @@ module Bombe
       # instance it was given at opening, so add an optional recursive
       # parameter that allows for requesting recursive closing.
       #
-      # Some backends might allow users to pass parameters from which
-      # to build their internal data access, in which case they'd also
-      # have to close it even if the user doesn't ask them to, so
-      # allow a @force_recursive_close variable to be set to true, to
-      # force closing.
+      # To simplify the logic, instead of creating a close_ internal
+      # method for all the subclasses, this method will invoke the
+      # method in two arrays: @teardown_always and
+      # @teardown_recursive.  The subclasses can add during initialize
+      # the Method objects for their teardown actions to those.
+      #
+      # TODO: if the methods are themselves allowing a recursive
+      # parameter, it might be a good idea to call it.
       def close(recursive = false)
-        if not respond_to? :close_
-          return
-        elsif method(:close_).arity == 1
-          close_(recursive or @force_recursive_close)
-        else
-          close_
+
+        # prepare a new array with the two arrays merged if going for
+        # recursive close.
+        methods = [ @teardown_always,
+                    recursive ? @teardown_recursive : []
+                  ].flatten
+
+        # Call each method; this means that the methods should not be
+        # dependent one from the other; if they are a new method
+        # should be created and added to the array intead.
+        methods.each do |method|
+          method.call
         end
       end
 
