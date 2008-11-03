@@ -16,6 +16,9 @@
 # License along with ruby-bombe.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+require 'bombe/exceptions'
+require 'pathname' # for Bombe::Utils::check_path
+
 # Utility functions for the Bombe library; these allow writing simpler
 # code when the same repetitive task has to be done.
 module Bombe::Utils
@@ -53,6 +56,23 @@ module Bombe::Utils
     typenames = klasses.join(", ").chomp(", ")
     raise TypeError.
       new("wrong argument type #{obj.class} (expected #{typenames})")
+  end
+
+  # Check that a given path is valid, and is not a directory.
+  #
+  # Since we have multiple path-based backends, and they should all
+  # check for the same kind of problems on the path given as
+  # initialisation, it's simpler to check for them here rather than
+  # replacing the exceptions on the fly.
+  def self.check_path(path)
+    # Make sure we work with pathnames, much easier that way.  This
+    # transformation will also raise an exception if the parameter is
+    # not a valid string (thus not a valid path). Cool.
+    path = Pathname.new(path) unless path.possibly_kind_of? Pathname
+
+    raise Bombe::NotFoundError.new(path) unless path.exist?
+    raise Bombe::PermissionError.new(path) unless path.readable?
+    raise Bombe::DirectoryError.new(path) if path.directory?
   end
 end
 
