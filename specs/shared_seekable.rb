@@ -41,13 +41,17 @@ describe 'all non-seekable instances', :shared => true do
   it 'should raise exception when calling seek' do
     lambda do
       @backend.seek(0)
-    end.should raise_error(NoMethodError)
+    end.should(raise_error(NoMethodError) do |e|
+                 e.message.should == "internal interface missing"
+               end)
   end
 
   it 'should raise exception when calling tell' do
     lambda do
       @backend.tell
-    end.should raise_error(NoMethodError)
+    end.should(raise_error(NoMethodError) do |e|
+                 e.message.should == "internal interface missing"
+               end)
   end
 end
 

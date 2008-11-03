@@ -66,7 +66,10 @@ describe Bombe::Backend::String do
     it "should reject integer parameters" do
       lambda do
         backend = Bombe::Backend::String.new(123)
-      end.should raise_error(TypeError)
+      end.should(raise_error(TypeError) do |e|
+                   e.message.should ==
+                     "wrong argument type Fixnum (expected Array, String)"
+                 end)
     end
 
     def check_invalid_array(arg)

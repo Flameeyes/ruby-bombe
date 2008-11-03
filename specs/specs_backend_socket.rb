@@ -66,7 +66,10 @@ describe Bombe::Backend::Socket do
     it "should reject a nil parameter" do
       lambda do
         Bombe::Backend::Socket.new(nil)
-      end.should raise_error(TypeError)
+      end.should(raise_error(TypeError) do |e|
+                   e.message.should ==
+                     "wrong argument type NilClass (expected Socket, TCPSocket, UDPSocket)"
+                 end)
     end
   end
 end
