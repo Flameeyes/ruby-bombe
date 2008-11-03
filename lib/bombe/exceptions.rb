@@ -64,7 +64,7 @@ module Bombe
   class PathException < Exception
     attr_reader :path
     def initialize(path, msg)
-      @path = path
+      @path = path.to_s
       super(msg)
     end
   end
