@@ -106,6 +106,10 @@ describe "all file-backed backends", :shared => true do
   end
 end
 
+# We need Pathname to get the name of the directory for the temporary
+# file.
+require 'pathname'
+
 # Description for the backends that accept paths as parameters
 #
 # Most file-based backends will accept paths as parameters; check some
@@ -116,13 +120,13 @@ end
 # before proceeding.
 describe "all path-based backends", :shared => true do
   it "should accept a String path parameter" do
-    instance = @klass.new(@tmpf.path.to_s)
+    instance = @klass.new(@tmpf.path)
     instance.should be
     instance.close!
   end
 
   it "should accept a Pathname path parameter" do
-    instance = @klass.new(@tmpf.path)
+    instance = @klass.new(Pathname.new(@tmpf.path))
     instance.should be
     instance.close!
   end
@@ -150,7 +154,7 @@ describe "all path-based backends", :shared => true do
   # Check that the backend rejects opening a file that is not readable
   # to the user.
   #
-  # This ensure that the backends behave in a cosnistent way when it
+  # This ensure that the backends behave in a consistent way when it
   # comes to files or other data sources that are not accessible (like
   # 403 errors from HTTP).
   it "should reject an inaccessible path" do
@@ -180,6 +184,17 @@ describe "all path-based backends", :shared => true do
     backend = @klass.new(@tmpf.path)
     backend.should be
     backend.close!
+  end
+
+  # Check that the backend rejects opening a directory rather than a
+  # file.
+  #
+  # This ensures that the backends behave in a consistent way when it
+  # comes to invalid paths.
+  it "should reject a path pointing to directory" do
+    lambda do
+      @klass.new(Pathname.new(@tmpf.path) + "..")
+    end.should raise_error(Bombe::DirectoryError)
   end
 end
 
