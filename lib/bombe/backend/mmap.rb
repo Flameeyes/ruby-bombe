@@ -44,17 +44,7 @@ begin
           @mmap = arg
           @teardown_recursive << @mmap.method(:munmap)
         else
-          # When a file at the given path does not exist, or it is not
-          # accessible, Mmap.new raises ArgumentError, but that makes
-          # it impossible to discern the two cases, so check it first
-          # with File class utility functions.
-          #
-          # Useful side-effect: we make sure that the argument can be
-          # converted to String since File functions check that for
-          # us.
-          raise Bombe::NotFoundError.new(arg) unless ::File.exist?(arg)
-          raise Bombe::PermissionError.new(arg) unless ::File.readable?(arg)
-
+          Bombe::Utils::check_path(arg)
           @mmap = ::Mmap.new(arg, "r", ::Mmap::MAP_SHARED)
           @teardown_always << @mmap.method(:munmap)
         end

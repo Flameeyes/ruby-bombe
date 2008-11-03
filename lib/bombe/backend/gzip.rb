@@ -43,19 +43,9 @@ module Bombe::Backend
         @teardown_recursive << arg.method(:close)
         @teardown_always << @reader.method(:close)
       else
-        begin
-          @reader = ::Zlib::GzipReader.new(::File.new(arg))
-          @teardown_always << @reader.method(:close)
-
-        # if the file does not exist or is not accessible, File.new
-        # will throw some exceptions from the Errno module, but we
-        # replace them with our own exceptions. Check the comments in
-        # exceptions.rb for an explanation on why this is done.
-        rescue Errno::ENOENT
-          raise Bombe::NotFoundError.new(arg)
-        rescue Errno::EACCES
-          raise Bombe::PermissionError.new(arg)
-        end
+        Bombe::Utils::check_path(arg)
+        @reader = ::Zlib::GzipReader.new(::File.new(arg))
+        @teardown_always << @reader.method(:close)
       end
     end
 
