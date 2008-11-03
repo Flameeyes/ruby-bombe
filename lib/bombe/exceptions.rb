@@ -58,6 +58,17 @@ module Bombe
   # backend is opened on an instance that is not open.
   ClosedStreamError = Exception.new("Closed stream or end of file")
 
+  # Simple class from which other path-based exception derive.
+  #
+  # This is just a convenience class used to have a path reader.
+  class PathException < Exception
+    attr_reader :path
+    def initialize(path, msg)
+      @path = path
+      super(msg)
+    end
+  end
+
   # Exception raised when a file or other data source cannot be
   # found. This includes non-existent files on the local filesystem,
   # HTTP requests returning 404 errors and so on.
@@ -66,11 +77,9 @@ module Bombe
   # Errno::ENOENT because not all backends throw the same exception,
   # or any exception at all, and the idea of bombe is that it provides
   # the same exact interface over different media.
-  class NotFoundError < Exception
-    attr_reader :path
+  class NotFoundError < PathException
     def initialize(path)
-      @path = path
-      super("#{path} not found")
+      super(path, "#{path} not found")
     end
   end
 
@@ -82,11 +91,24 @@ module Bombe
   # Errno::ENOENT because not all backends throw the same exception,
   # or any exception at all, and the idea of bombe is that it provides
   # the same exact interface over different media.
-  class PermissionError < Exception
-    attr_reader :path
-    def initialzie(path)
-      @path = path
-      super("Permission denied accessing #{path}")
+  class PermissionError < PathException
+    def initialize(path)
+      super(path, "Permission denied accessing #{path}")
+    end
+  end
+
+  # Exception raised when a path given for initialisation points to a
+  # directory rather than a file.
+  #
+  # Since the backends only allow accessing files, it isn't valid to
+  # give them a path for a directory instead.
+  #
+  # This exception is used to replace Errno::EISDIR, although that
+  # might be just fine for what we need.
+  # TODO: consider using Errno::EISDIR instead.
+  class DirectoryError < PathException
+    def initialize(path)
+      super(path, "#{path} is a directory")
     end
   end
 end
