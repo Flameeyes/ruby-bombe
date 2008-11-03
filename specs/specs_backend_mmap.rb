@@ -17,6 +17,9 @@
 # <http://www.gnu.org/licenses/>.
 
 require 'bombe/backend/mmap'
+require 'shared_template'
+require 'shared_seekable'
+require 'shared_path'
 
 # if the mmap backend is missing, don't run the mmap specs test, since
 # they would obviously fail.

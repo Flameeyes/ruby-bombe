@@ -17,6 +17,9 @@
 # <http://www.gnu.org/licenses/>.
 
 require 'bombe/backend/gzip'
+require 'shared_template'
+require 'shared_seekable'
+require 'shared_path'
 
 # Create a shared case for backends acting on gzip-compressed files.
 #
