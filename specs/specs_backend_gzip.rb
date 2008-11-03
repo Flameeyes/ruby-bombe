@@ -130,7 +130,7 @@ describe Bombe::Backend::Gzip do
     it_should_behave_like "all Backend::Gzip instances"
 
     before(:each) do
-      @backend = Bombe::Backend::Gzip.new(@tmpf.path.to_s)
+      @backend = Bombe::Backend::Gzip.new(@tmpf.path)
     end
   end
 
@@ -140,7 +140,7 @@ describe Bombe::Backend::Gzip do
     it_should_behave_like "all Backend::Gzip instances"
 
     before(:each) do
-      @backend = Bombe::Backend::Gzip.new(@tmpf.path)
+      @backend = Bombe::Backend::Gzip.new(Pathname.new(@tmpf.path))
     end
   end
 end

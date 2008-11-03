@@ -65,7 +65,7 @@ describe Bombe::Backend::File do
     it_should_behave_like "all Backend::File instances"
 
     before(:each) do
-      @backend = Bombe::Backend::File.new(@tmpf.path.to_s)
+      @backend = Bombe::Backend::File.new(@tmpf.path)
     end
   end
 
@@ -79,7 +79,7 @@ describe Bombe::Backend::File do
     it_should_behave_like "all Backend::File instances"
 
     before(:each) do
-      @backend = Bombe::Backend::File.new(@tmpf.path)
+      @backend = Bombe::Backend::File.new(Pathname.new(@tmpf.path))
     end
   end
 

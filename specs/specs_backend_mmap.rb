@@ -122,7 +122,7 @@ unless $BOMBE_NO_MMAP
       it_should_behave_like "all Backend::Mmap instances"
 
       before(:each) do
-        @backend = Bombe::Backend::Mmap.new(@tmpf.path)
+        @backend = Bombe::Backend::Mmap.new(Pathname.new(@tmpf.path))
       end
     end
 
