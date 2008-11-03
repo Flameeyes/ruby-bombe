@@ -57,11 +57,19 @@ describe "all backend instances", :shared => true do
     @backend.should be_possibly_kind_of(Bombe::Backend::Base)
   end
 
-  # All instances should answer to the close method
+  # All instances should answer to the close method ...
   it "should respond to the close method" do
     @backend.should respond_to(:close)
   end
 
+  # ... and it should accept a recursive parameter ...
+  it "should allow a recursive parameter to close" do
+    # Since this method can be called with zero or one parameters, it
+    # is reported with arity of -1 (variable arguments).
+    @backend.method(:close).arity.should == -1
+  end
+
+  # ... and to the recursive close method
   it "should respond to the close! method" do
     @backend.should respond_to(:close!)
   end
