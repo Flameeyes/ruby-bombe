@@ -65,10 +65,36 @@ unless $BOMBE_NO_MMAP
       it_should_behave_like "all Backend::Mmap instances"
 
       before(:each) do
-        @backend =
-          Bombe::Backend::Mmap.new(Mmap.new(@tmpf.path,
-                                            "r",
-                                            Mmap::MAP_SHARED))
+        @mmap = Mmap.new(@tmpf.path, "r", Mmap::MAP_SHARED)
+        @backend = Bombe::Backend::Mmap.new(@mmap)
+      end
+
+      # The Mmap backend should abide to the recursive parameter of
+      # the close method when given a Mmap instance at initialisation
+      # (and just then).
+      it "should leave the file mapped in memory after non-recursive closing" do
+        # non-recursively close the backend, and set it to nil so that
+        # after(:each) won't try to close it again
+        @backend.close(false)
+        @backend = nil
+
+        # Here we can just try and see that it works, since there is
+        # no way to query the Mmap instance to know if it's mapped or
+        # not.
+        @mmap.munmap
+     end
+
+      it "should not leave the file mapped in memory after recursive closing" do
+        # recursively close the backend, and set it to nil so that
+        # after(:each) won't try to close it again
+        @backend.close(true)
+        @backend = nil
+
+        lambda do
+          @mmap.munmap
+        end.should(raise_error(IOError) do |e|
+                     e.message.should == "unmapped file"
+                   end)
       end
     end
 
