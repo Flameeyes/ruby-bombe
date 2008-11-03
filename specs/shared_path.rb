@@ -51,14 +51,19 @@ describe "all path-based backends", :shared => true do
     # request a new temporary file, with an unique name...
     temp = Tempfile.new(description)
     # save the path right now, since after unlinking it would be nil.
-    path = temp.path.to_s
+    path = temp.path
     # ... and then remove it so that we know for sure it does not
     # exist.
     temp.unlink
 
     lambda do
       @klass.new(path)
-    end.should raise_error(Bombe::NotFoundError)
+    end.should(raise_error(Bombe::NotFoundError) do |e|
+                 # Let's make sure that the path is also reported
+                 # correctly, so that we know PathException works
+                 # properly.
+                 e.path.should == path
+               end)
   end
 
   # Check that the backend rejects opening a file that is not readable
@@ -75,7 +80,12 @@ describe "all path-based backends", :shared => true do
 
     lambda do
       @klass.new(temp.path)
-    end.should raise_error(Bombe::PermissionError)
+    end.should(raise_error(Bombe::PermissionError) do |e|
+                 # Let's make sure that the path is also reported
+                 # correctly, so that we know PathException works
+                 # properly.
+                 e.path.should == temp.path
+               end)
 
     temp.unlink
   end
@@ -104,7 +114,12 @@ describe "all path-based backends", :shared => true do
   it "should reject a path pointing to directory" do
     lambda do
       @klass.new(Pathname.new(@tmpf.path) + "..")
-    end.should raise_error(Bombe::DirectoryError)
+    end.should(raise_error(Bombe::DirectoryError) do |e|
+                 # Let's make sure that the path is also reported
+                 # correctly, so that we know PathException works
+                 # properly.
+                 e.path.should == (Pathname.new(@tmpf.path) + "..").to_s
+               end)
   end
 end
 
