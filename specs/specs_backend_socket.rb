@@ -25,6 +25,7 @@ require 'specs_backend_io'
 describe 'all Backend::Socket instances', :shared => true do
   it_should_behave_like 'all Backend::IO instances'
   it_should_behave_like 'all non-seekable instances'
+  it_should_behave_like "all non-size-knowing instances"
 
   it 'should be a Socket backend' do
     @backend.should be_possibly_kind_of(Bombe::Backend::Socket)

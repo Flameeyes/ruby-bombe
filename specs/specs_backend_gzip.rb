@@ -53,6 +53,7 @@ describe "all Backend::Gzip instances", :shared => true do
   it_should_behave_like "all backends"
   it_should_behave_like "all gzip-backed backends"
   it_should_behave_like 'all seekable instances'
+  it_should_behave_like "all non-size-knowing instances"
 
   it "should be a Gzip backend" do
     @backend.should be_possibly_kind_of(Bombe::Backend::Gzip)

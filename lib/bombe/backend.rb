@@ -135,11 +135,24 @@ module Bombe
         close(true)
       end
 
+      # Report the size of the data present in the backend
+      #
+      # This method is used to tell the user how big the data is, like
+      # the size of a file or of an array. Not all backends will be
+      # able to tell this. For instance a Socket or a generic IO
+      # backend won't be able to handle this.
+      def size
+        raise NoMethodError.new("internal interface missing", "size") unless
+          respond_to? "size_"
+
+        size_
+      end
+
       # Okay now we need to inject our own little respond_to? method
       # that can tell us whether the children classes actually respond
       # to the given method...
 
-      WrappedMethods = [ :seek, :tell, :read, :readbytes ]
+      WrappedMethods = [ :seek, :tell, :size, :read, :readbytes ]
 
       def respond_to?(method)
         return super(method) unless WrappedMethods.include? method

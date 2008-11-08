@@ -49,6 +49,12 @@ begin
           @teardown_always << @mmap.method(:munmap)
         end
       end
+
+      # Provide the size of the mapped region
+      def size_
+        @mmap.size
+      end
+
     end
   end
 rescue LoadError

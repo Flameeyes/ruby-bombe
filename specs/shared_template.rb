@@ -107,6 +107,30 @@ describe "all file-backed backends", :shared => true do
   end
 end
 
+describe "all size-knowing instances", :shared => true do
+  it "should respond to the size method" do
+    @backend.should respond_to(:size)
+  end
+
+  it "should report exactly 1KB as size" do
+    @backend.size.should == 1024
+  end
+end
+
+describe "all non-size-knowing instances", :shared => true do
+  it "should not respond to the size method" do
+    @backend.should_not respond_to(:size)
+  end
+
+  it "should raise a NoMethodError if size is called" do
+    lambda do
+      @backend.size
+    end.should(raise_error(NoMethodError) do |e|
+                 e.message == "internal interface missing"
+               end)
+  end
+end
+
 # Local Variables:
 # mode: flyspell-prog
 # mode: whitespace

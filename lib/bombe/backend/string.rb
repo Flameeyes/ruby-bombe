@@ -60,6 +60,11 @@ module Bombe::Backend
 
       @array = arg
     end
+
+    # Provide the size of the string or array
+    def size_
+      @array.size
+    end
   end
 end
 

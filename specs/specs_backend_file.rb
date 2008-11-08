@@ -27,6 +27,7 @@ describe 'all Backend::File instances', :shared => true do
   it_should_behave_like "all file-backed backends"
   it_should_behave_like "all Backend::IO instances"
   it_should_behave_like 'all seekable instances'
+  it_should_behave_like "all size-knowing instances"
 
   it "should be a File backend" do
     @backend.should be_possibly_kind_of(Bombe::Backend::File)

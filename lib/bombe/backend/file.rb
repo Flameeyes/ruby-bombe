@@ -28,7 +28,23 @@ module Bombe::Backend
   class File < IO
     def initialize(path)
       Bombe::Utils::check_path(path)
+
+      self.extend Size if ::File.stat(path).file?
+
       super(::File.new(path), true)
+   end
+
+    private
+    # This module contains a size_ method that is used by the Base
+    # backend to report the user the full size in bytes of the file if
+    # applicable.
+    #
+    # This is not available for all File instances since it won't work
+    # for character and block devices.
+    module Size
+      def size_
+        @io.stat.size
+      end
     end
   end
 end
