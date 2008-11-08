@@ -206,27 +206,41 @@ describe "all seekable instances", :shared => true do
   end
 
   it "should reject absolute seeks over the end of data (border)" do
-    pending
+    lambda do
+      @backend.seek(1025)
+    end.should raise_error(Bombe::InvalidSeek)
   end
 
   it "should reject absolute seeks over the end of data" do
-    pending
+    lambda do
+      @backend.seek(1100)
+    end.should raise_error(Bombe::InvalidSeek)
   end
 
   it "should reject relative seeks over the end of data (beginning, borer)" do
-    pending
+    lambda do
+      @backend.seek(1025, ::IO::SEEK_CUR)
+    end.should raise_error(Bombe::InvalidSeek)
   end
 
   it "should reject relative seeks over the end of data (beginning)" do
-    pending
+    lambda do
+      @backend.seek(1100, ::IO::SEEK_CUR)
+    end.should raise_error(Bombe::InvalidSeek)
   end
 
   it "should reject relative seeks over the end of data (middle, border)" do
-    pending
+    @backend.seek(512)
+    lambda do
+      @backend.seek(513, ::IO::SEEK_CUR)
+    end.should raise_error(Bombe::InvalidSeek)
   end
 
   it "should reject relative seeks over the end of data (middle)" do
-    pending
+    @backend.seek(512)
+    lambda do
+      @backend.seek(600, ::IO::SEEK_CUR)
+    end.should raise_error(Bombe::InvalidSeek)
   end
 
   # Test invalid parameters to the seek method
@@ -260,18 +274,21 @@ end
 # size is known. For this reason the tests for reverse seeking are
 # described in a different scenario.
 describe "all reverse-seekable instances", :shared => true do
-  it "should allow reverse seeking" do
-    @backend.seek(0, ::IO::SEEK_END)
-    @backend.tell.should == 1024
-  end
-
   it "should allow negative reverse seeking" do
     @backend.seek(-100, ::IO::SEEK_END)
     @backend.tell.should == 924
   end
 
+  it "should reject reverse seeking at end of file" do
+    lambda do
+      @backend.seek(0, ::IO::SEEK_END)
+    end.should raise_error(Bombe::InvalidSeek)
+  end
+
   it "should reject positive reverse seeking" do
-    pending
+    lambda do
+        @backend.seek(100, ::IO::SEEK_END)
+      end.should raise_error(Bombe::InvalidSeek)
   end
 end
 

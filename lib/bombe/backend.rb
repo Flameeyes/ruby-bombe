@@ -66,14 +66,24 @@ module Bombe
                  end
 
         # Raise an exception if trying to seek before the start of the
-        # data or after the end of it . Note that we allow to position
-        # at the very end of the data (EOF) but then it won't be
-        # possible to do much more.
+        # data or after the end of it .
         raise InvalidSeek.new(amount, whence, tell) if
-          newpos < 0 or ( respond_to? :size and newpos > size )
+          newpos < 0 or ( respond_to? :size and newpos >= size )
 
-        # finally call the implementation of this
-        seek_(amount, whence)
+        # Finally time to call the implementation. But since the
+        # implementation might raise an InvalidSeek exception (when
+        # going over the end of file for backends not providing a size
+        # method), we need to restore the old position in that case to
+        # ensure we didn't move... yes it might be slow.
+        begin
+          oldpos = tell
+          seek_(amount, whence)
+        rescue InvalidSeek
+          # we hope not to create a recursive call here
+          seek(oldpos)
+
+          raise
+        end
 
         # Always return 0
         0

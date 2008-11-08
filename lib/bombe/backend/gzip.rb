@@ -81,7 +81,12 @@ module Bombe::Backend
       else
         @reader.rewind
         @reader.read(newpos)
+
       end
+
+      # If we moved toward or after the end of file, raise an
+      # exception.
+      raise Bombe::InvalidSeek.new(amount, whence) if @reader.eof?
     end
   end
 end

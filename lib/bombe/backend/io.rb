@@ -81,6 +81,8 @@ module Bombe::Backend
 
       def seek_(amount, whence)
         @io.seek(amount, whence)
+
+        raise Bombe::InvalidSeek.new(amount, whence) if @io.eof?
       end
     end # Seekable
   end
