@@ -138,7 +138,7 @@ describe "all seekable instances", :shared => true do
     end.should(raise_error(Bombe::InvalidSeek) do |e|
                  e.amount.should == -1
                  e.whence.should == ::IO::SEEK_SET
-                 e.pos.should be_nil
+                 e.pos.should == 0
                end)
   end
 
@@ -148,7 +148,7 @@ describe "all seekable instances", :shared => true do
     end.should(raise_error(Bombe::InvalidSeek) do |e|
                  e.amount.should == -100
                  e.whence.should == ::IO::SEEK_SET
-                 e.pos.should be_nil
+                 e.pos.should == 0
                end)
   end
 

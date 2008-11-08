@@ -51,23 +51,26 @@ module Bombe
         # so that the backends can ignore it.
         Utils::check_type(amount, Integer)
 
-        case whence
-        when ::IO::SEEK_SET
-          # make sure it does not try to seek to a negative position
-          raise InvalidSeek.new(amount, whence) unless amount >= 0
-        when ::IO::SEEK_CUR
-          # make sure it does not try to seek to a negative position
-          raise InvalidSeek.new(amount, whence, tell) unless amount+tell >= 0
-        when ::IO::SEEK_END
-          # Don't allow negative seeks if there is no way to know the
-          # total size of the stream (compressed files, pipes, ...)
-          raise InvalidSeek.new(nil, whence) unless respond_to? "size_"
-          # make sure it does not try to seek to a negative position
-          raise InvalidSeek.new(amount, whence) unless amount+size >= 0
-        else
-          # raise an exception if the whence parameter is unknown
-          raise InvalidWhence.new(whence)
-        end
+        newpos = case whence
+                 when ::IO::SEEK_SET: amount
+                 when ::IO::SEEK_CUR: tell + amount
+                 when ::IO::SEEK_END
+                   # Don't allow reverse seek if there is no way to
+                   # know the total size of the stream (compressed
+                   # files, pipes, ...)
+                   raise InvalidSeek.new(nil, whence) unless respond_to? "size_"
+                   size + amount
+                 else
+                   # raise an exception if the whence parameter is unknown
+                   raise InvalidWhence.new(whence)
+                 end
+
+        # Raise an exception if trying to seek before the start of the
+        # data or after the end of it . Note that we allow to position
+        # at the very end of the data (EOF) but then it won't be
+        # possible to do much more.
+        raise InvalidSeek.new(amount, whence, tell) if
+          newpos < 0 or ( respond_to? :size and newpos > size )
 
         # finally call the implementation of this
         seek_(amount, whence)
