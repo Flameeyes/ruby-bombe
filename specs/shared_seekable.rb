@@ -256,6 +256,25 @@ describe "all seekable instances", :shared => true do
 
 end
 
+# Reverse seeking (SEEK_END) can only be applied to backends whose
+# size is known. For this reason the tests for reverse seeking are
+# described in a different scenario.
+describe "all reverse-seekable instances", :shared => true do
+  it "should allow reverse seeking" do
+    @backend.seek(0, ::IO::SEEK_END)
+    @backend.tell.should == 1024
+  end
+
+  it "should allow negative reverse seeking" do
+    @backend.seek(-100, ::IO::SEEK_END)
+    @backend.tell.should == 924
+  end
+
+  it "should reject positive reverse seeking" do
+    pending
+  end
+end
+
 # Local Variables:
 # mode: flyspell-prog
 # mode: whitespace
