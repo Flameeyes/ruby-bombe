@@ -86,15 +86,24 @@ describe Bombe::Backend::File do
     end
   end
 
-  # TODO: file backend should also accept file instances and Tempfiles!
-  # describe "with a Tempfile parameter" do
-  #   it_should_behave_like "all Backend::File instances"
-  #
-  #   before(:each) do
-  #     @tmpf.open
-  #     @backend = Bombe::Backend::File.new(@tmpf)
-  #   end
-  # end
+  # Test the behaviour of the File backend when providing an already
+  # open file instance.
+  describe "with a File parameter" do
+    it_should_behave_like "all Backend::File instances"
+
+    before(:each) do
+      @backend = Bombe::Backend::File.new(::File.new(@tmpf.path))
+    end
+  end
+
+  describe "with a Tempfile parameter" do
+    it_should_behave_like "all Backend::File instances"
+
+    before(:each) do
+      @tmpf.open
+      @backend = Bombe::Backend::File.new(@tmpf)
+    end
+  end
 end
 
 # Local Variables:

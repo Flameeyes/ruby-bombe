@@ -26,12 +26,17 @@ module Bombe::Backend
   # accepts a string or pathname as input, opens it and passes it to
   # the IO class.
   class File < IO
-    def initialize(path)
-      Bombe::Utils::check_path(path)
+    def initialize(arg)
+      if arg.possibly_kind_of? ::File
+        self.extend Size if arg.stat.file?
+        super(arg, false)
+     else
+        Bombe::Utils::check_path(arg)
 
-      self.extend Size if ::File.stat(path).file?
+        self.extend Size if ::File.stat(arg).file?
 
-      super(::File.new(path), true)
+        super(::File.new(arg), true)
+      end
    end
 
     private
