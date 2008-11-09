@@ -19,6 +19,12 @@
 require 'bombe/exceptions'
 require 'bombe/utils'
 
+# Even though we're not going to use this code directly, we require
+# this to have the TruncatedDataError exception since we want to
+# follow the standard Ruby library in term of exceptions raised as
+# much as we can.
+require 'readbytes'
+
 module Bombe
   module Backend
 
@@ -159,6 +165,26 @@ module Bombe
           respond_to? "size_"
 
         size_
+      end
+
+      # Implement an interface similar to the one offered by
+      # readbytes.rb from Ruby standard library itself.
+      #
+      # Unfortunately they didn't make the readbytes interface generic
+      # enough, which means I actually have to reimplement it here.
+      def readbytes(n)
+        # read at most n bytes...
+        str = read(n)
+
+        # if we're already at the end of the file and nothing could be read.
+        # this should be checked since we shouldn't need this...
+        raise EOFError, "End of file reached" if str == nil
+
+        # If the string is shorter than we requested, it was
+        # truncated, raise an exception.
+        raise TruncatedDataError.new("data truncated", str) if str.size < n
+
+        str
       end
 
       # Okay now we need to inject our own little respond_to? method
