@@ -167,6 +167,26 @@ module Bombe
         size_
       end
 
+      # Implement a read functions for the backends
+      #
+      # This maps directly to most common read methods from IO and
+      # other objects, but it ensures, if possible, that the size read
+      # does not go over the end of the file.
+      #
+      # Note that the safety in here is not available if the backend
+      # does not support the size function, in those cases the backend
+      # should take care of it by itself.
+      #
+      # Note that this function does not check for the presence of the
+      # read_ method since it is supposed to _always_ be there (you
+      # won't have a backend unable to read data from!).
+      def read(n)
+        n = [n, size-tell].min if
+          respond_to? :size and respond_to? :tell
+
+        read_(n)
+      end
+
       # Implement an interface similar to the one offered by
       # readbytes.rb from Ruby standard library itself.
       #
