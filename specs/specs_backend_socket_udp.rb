@@ -26,30 +26,34 @@ describe "Bombe::Backend::Socket (UDP)" do
   # All the socket test requires a socket where to connect; for this
   # reason start here a thread with a UDP socket to use for reading
   # data from.
-  before(:all) do
+  def start_thread
+    return if @thread
     @port = (10240 + rand(1024))
 
     # Create a new Thread for the UDP "server"
     @thread = Thread.new do
-      loop do
-        begin
-          sock = UDPSocket.new
-          sock.bind "localhost", @port
-          sock.connect "localhost", @port+1
+      begin
+        sock = UDPSocket.new
+        sock.bind "localhost", @port
+        sock.connect "localhost", @port+1
 
-          # dump the random data for the test on it
-          sock.write @content
-          # and then close it
-          sock.close
-        rescue Exception => e
-          $stderr.puts e.message
-        end
+        # dump the random data for the test on it
+        sock.write @content
+        # and then close it
+        sock.close
+      rescue Exception => e
+        $stderr.puts e.message
       end
     end
   end
 
-  after(:all) do
-    @thread.kill
+  before(:each) do
+    start_thread
+  end
+
+  after(:each) do
+    @thread.kill if @thread
+    @thread = nil
   end
 
   # Describe the behaviour of the class. While TCP sockets and UDP
@@ -94,6 +98,7 @@ describe "Bombe::Backend::Socket (UDP)" do
     it_should_behave_like "all Backend::IO instances with opt-out close"
 
     before(:each) do
+      start_thread
       @io = ::UDPSocket.new
       @io.bind("localhost", @port+1)
       @io.connect("localhost", @port)
@@ -109,6 +114,7 @@ describe "Bombe::Backend::Socket (UDP)" do
     it_should_behave_like "all Backend::IO instances with opt-out close"
 
     before(:each) do
+      start_thread
       @io = ::Socket.new(::Socket::Constants::AF_INET,
                          ::Socket::Constants::SOCK_DGRAM,
                          0)
