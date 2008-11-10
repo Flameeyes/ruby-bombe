@@ -33,11 +33,11 @@ module Bombe::Backend
     # TODO: it should allow for an Hash to be passed with :host, :port
     # and :protocol parameters to open a new Socket instance.
     def initialize(arg)
-      # Since Socket and TCPSocket are implemented in a binary
-      # extension, they are not parent and child here, so they have to
-      # be listed separately; nonetheless, they are both IO instances,
-      # which is good for us. To add support for UDP or other sockets,
-      # add them to the array here.
+      # Since Socket, TCPSocket and UDPSocket are implemented in a
+      # binary extension, they are not parent and child here, so they
+      # have to be listed separately; nonetheless, they are all IO
+      # instances, which is good for us. To add support for Unix or
+      # other sockets, add them to the array here.
       Bombe::Utils::check_type(arg, [::Socket, ::TCPSocket, ::UDPSocket])
 
       super(arg)
