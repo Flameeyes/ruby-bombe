@@ -55,6 +55,14 @@ begin
         @mmap.size
       end
 
+      # Provide a function to read data to the Base class.
+      #
+      # Since we implement the size method, we don't need to worry to
+      # go over the end of data, Base#read takes care of that for us.
+      def read_(n)
+        @mmap[tell..(tell+n-1)]
+      end
+
     end
   end
 rescue LoadError

@@ -65,6 +65,20 @@ module Bombe::Backend
     def size_
       @array.size
     end
+
+    # Provide a function to read data to the Base class.
+    #
+    # Since we implement the size method, we don't need to worry to
+    # go over the end of data, Base#read takes care of that for us.
+    def read_(n)
+      val = @array[tell..(tell+n-1)]
+
+      # if it's a string we return it right away
+      return val if val.is_a? ::String
+
+      # if it's not a string we have to make it one
+      return val.collect { |x| x.chr }.to_s
+    end
   end
 end
 

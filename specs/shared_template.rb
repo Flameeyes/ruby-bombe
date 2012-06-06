@@ -73,6 +73,45 @@ describe "all backend instances", :shared => true do
   it "should respond to the close! method" do
     @backend.should respond_to(:close!)
   end
+
+  # Check that the instance responds to the read method
+  it "should respond to the read method" do
+    @backend.should respond_to(:read)
+  end
+
+  # ... and to the readbytes method
+  it "should respond to the readbytes method" do
+    @backend.should respond_to(:readbytes)
+  end
+
+  # Check that reading a single byte works as expected
+  it "should allow reading a single byte" do
+    str = @backend.read(1)
+    str.size.should == 1
+    str.should == @content[0..0]
+  end
+
+  # As well reading a block
+  it "should allow reading a block of bytes" do
+    str = @backend.read(32)
+    str.size.should == 32
+    str.should == @content[0..31]
+  end
+
+  # And reading the full content
+  it "should allow reading the full content" do
+    str = @backend.read(1024)
+    str.size.should == 1024
+    str.should == @content
+  end
+
+  # make sure that it allows reading more than the size without
+  # exception being raised (but data being limited)
+  it "shouldn't raise exception when reading more than the size" do
+    str = @backend.read(2048)
+    str.size.should == 1024
+    str.should == @content
+  end
 end
 
 # We use Tempfile to write a temporary file with random data for each

@@ -67,6 +67,12 @@ module Bombe::Backend
 
     protected
 
+    # Implement the sub-implementation for Base#read. This is the
+    # actual reading function, and directly maps to IO#read.
+    def read_(n)
+      @io.read(n)
+    end
+
     # Special module used to extend IO instances that are
     # seekable. This module allow to add the seek_ and tell_
     # internal functions on a per-object basis without having to

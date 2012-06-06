@@ -73,22 +73,34 @@ module Bombe::Backend
                when ::IO::SEEK_SET: amount
                end
 
-      if newpos == tell # Nothing to do!
-        return
-      elsif newpos > tell
-        # TODO: change this to readbytes!
-        @reader.read(newpos-tell)
-      else
-        @reader.rewind
-        @reader.read(newpos)
+      return if newpos == tell # Nothing to do!
 
+      begin
+        if newpos > tell
+          readbytes(newpos-tell)
+        else
+          @reader.rewind
+          readbytes(newpos)
+        end
+      rescue TruncatedDataError
+        # If we got an error regarding truncated data it means we got
+        # over the end of the file, since the requested read cannot be
+        # satisfied. In this case, raise an InvalidSeek exception.
+        raise Bombe::InvalidSeek.new(amount, whence)
       end
 
       # If we moved toward or after the end of file, raise an
       # exception.
       raise Bombe::InvalidSeek.new(amount, whence) if @reader.eof?
     end
-  end
+
+    # Implement the sub-implementation for Base#read. This is the
+    # actual reading function, and directly maps to GzipReader#read.
+    def read_(n)
+      @reader.read(n)
+    end
+
+   end
 end
 
 # Local Variables:

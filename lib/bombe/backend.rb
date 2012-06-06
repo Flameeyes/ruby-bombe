@@ -211,7 +211,7 @@ module Bombe
       # that can tell us whether the children classes actually respond
       # to the given method...
 
-      WrappedMethods = [ :seek, :tell, :size, :read, :readbytes ]
+      WrappedMethods = [ :seek, :tell, :size ]
 
       def respond_to?(method)
         return super(method) unless WrappedMethods.include? method
